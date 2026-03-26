@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "produtos")
@@ -24,7 +25,7 @@ public class Produtos {
     private String descricao;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private double preco;
+    private BigDecimal preco;
 
     @Column(nullable = false)
     private Boolean ativo = true;
@@ -53,8 +54,8 @@ public class Produtos {
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public double getPreco() { return preco; }
-    public void setPreco(double preco) { this.preco = preco; }
+    public BigDecimal getPreco() { return preco; }
+    public void setPreco(BigDecimal preco) { this.preco = preco; }
 
     public Boolean getAtivo() { return ativo; }
     public void setAtivo(Boolean ativo) { this.ativo = ativo; }

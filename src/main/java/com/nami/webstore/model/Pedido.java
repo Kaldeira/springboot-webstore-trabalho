@@ -4,6 +4,7 @@ import com.nami.webstore.enums.StatusPedido;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "pedidos")
@@ -24,10 +25,10 @@ public class Pedido {
     private StatusPedido status = StatusPedido.AGUARDANDO_PAGAMENTO;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double total;
+    private BigDecimal total;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double frete = 0.0;
+    private BigDecimal frete = BigDecimal.ZERO;
 
     @Column(name = "codigo_rastreio", length = 50)
     private String codigoRastreio;
@@ -52,10 +53,10 @@ public class Pedido {
     public void setEndereco(Endereco endereco) { this.endereco = endereco; }
     public StatusPedido getStatus() { return status; }
     public void setStatus(StatusPedido status) { this.status = status; }
-    public Double getTotal() { return total; }
-    public void setTotal(Double total) { this.total = total; }
-    public Double getFrete() { return frete; }
-    public void setFrete(Double frete) { this.frete = frete; }
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
+    public BigDecimal getFrete() { return frete; }
+    public void setFrete(BigDecimal frete) { this.frete = frete; }
     public String getCodigoRastreio() { return codigoRastreio; }
     public void setCodigoRastreio(String codigoRastreio) { this.codigoRastreio = codigoRastreio; }
     public LocalDateTime getCriadoEm() { return criadoEm; }

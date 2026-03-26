@@ -1,5 +1,6 @@
 package com.nami.webstore.model;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_pedido")
@@ -19,7 +20,7 @@ public class ItemPedido {
     private Integer quantidade;
 
     @Column(name = "preco_unit", nullable = false, precision = 10, scale = 2)
-    private double precoUnit;
+    private BigDecimal precoUnit;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -29,6 +30,6 @@ public class ItemPedido {
     public void setVariante(Variante variante) { this.variante = variante; }
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
-    public double getPrecoUnit() { return precoUnit; }
-    public void setPrecoUnit(double precoUnit) { this.precoUnit = precoUnit; }
+    public BigDecimal getPrecoUnit() { return precoUnit; }
+    public void setPrecoUnit(BigDecimal precoUnit) { this.precoUnit = precoUnit; }
 }
