@@ -41,16 +41,16 @@ INSERT INTO imagens_produto (produto_id, url, principal) VALUES
   (6, '/images/tenis-running-pro-1.jpg', TRUE),
   (7, '/images/moletom-canguru-azul-1.jpg', TRUE);
 
-INSERT INTO usuarios (nome, email, senha_hash, cpf, telefone) VALUES
+INSERT INTO usuarios (nome, email, senha_hash, cpf, telefone, tipo) VALUES
   ('Ana Lima',    'ana@email.com',    '1234', '111.111.111-11', '(11) 91111-1111', 1),
   ('Carlos Souza','carlos@email.com', '1234', '222.222.222-22', '(21) 92222-2222', 1),
-  ('Admin','admin@email.com', 'admin', '233.222.223-22', '(21) 92322-2322', 1);
+  ('Admin','admin@email.com', 'admin', '233.222.223-22', '(21) 92322-2322', 0);
 
-INSERT INTO enderecos (cliente_id, apelido, logradouro, numero, bairro, cidade, estado, cep, principal) VALUES
+INSERT INTO enderecos (usuario_id, apelido, logradouro, numero, bairro, cidade, estado, cep, principal) VALUES
   (1, 'Casa',     'Rua das Flores',   '123', 'Centro',       'São Paulo',   'SP', '01310-100', TRUE),
   (2, 'Casa',     'Av. Atlântica',    '456', 'Copacabana',   'Rio de Janeiro', 'RJ', '22021-001', TRUE);
 
-INSERT INTO pedidos (cliente_id, endereco_id, status, total, frete) VALUES
+INSERT INTO pedidos (usuario_id, endereco_id, status, total, frete) VALUES
   (1, 1, 'PAGO', 399.70, 19.90);
 
 INSERT INTO itens_pedido (pedido_id, variante_id, quantidade, preco_unit) VALUES

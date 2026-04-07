@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS webstore;
 CREATE DATABASE IF NOT EXISTS webstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE webstore;
 
