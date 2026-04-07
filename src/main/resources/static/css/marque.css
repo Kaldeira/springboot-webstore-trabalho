@@ -1,0 +1,30 @@
+.marquee-wrap {
+    background: var(--accent);
+    color: #0a0a0a;
+    overflow: hidden;
+    padding: 9px 0;
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.marquee-track {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 22s linear infinite;
+}
+
+.marquee-track span {
+    padding: 0 2rem;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-50%)
+    }
+}

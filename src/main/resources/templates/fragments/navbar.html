@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragment="navbar">
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <nav>
+        <a href="#" class="nav-logo">nemesis</a>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Lançamentos</a></li>
+            <li><a th:href="@{/panelProdutos}">Roupas</a></li>
+            <li><a href="#">Tênis</a></li>
+            <li><a href="../sale.html">Sale</a></li>
+        </ul>
+        <div class="nav-right">
+            <a th:href="@{/login}" class="login-btn">
+                <i class="fa-solid fa-user"></i>
+                Login
+            </a>
+
+            <button class="cart-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count" id="cart-count">0</span>
+            </button>
+        </div>
+
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis — Cadastro</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<nav>
+    <a th:href="@{/}" class="nav-logo">nemesis</a>
+    <a th:href="@{/login}" class="nav-back">Voltar para login</a>
+</nav>
+
+<div class="page">
+
+    <div class="panel-center">
+        <div class="form-box">
+
+            <h1 class="form-heading">Cadastro</h1>
+            <p class="form-sub">Crie sua conta para continuar.</p>
+
+            <form method="post" th:action="salvarUsuario" th:object="${usuario}">
+
+                <div class="form-group">
+                    <label class="form-label" for="nome">Nome</label>
+                    <input class="form-input"
+                           id="nome"
+                           type="text"
+                           th:field="*{nome}"
+                           placeholder="Seu nome"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">E-mail</label>
+                    <input class="form-input"
+                           id="email"
+                           type="email"
+                           th:field="*{email}"
+                           placeholder="seu@email.com"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="senhaHash">Senha</label>
+                    <div class="form-input-wrap">
+                        <input class="form-input"
+                               id="senhaHash"
+                               type="password"
+                               th:field="*{senhaHash}"
+                               placeholder="••••••••"
+                               style="padding-right:64px"/>
+                        <button type="button" class="toggle-pass" id="toggle-pass">Ver</button>
+                    </div>
+                </div>
+
+                <div class="register-link">
+                    <span>Já tem conta? </span>
+                    <a th:href="@{/login}">Entrar</a>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Cadastrar</span>
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top  = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button, input, label').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+
+    const pwdInput = document.getElementById('senhaHash');
+    document.getElementById('toggle-pass').addEventListener('click', function() {
+        const show = pwdInput.type === 'password';
+        pwdInput.type = show ? 'text' : 'password';
+        this.textContent = show ? 'Ocultar' : 'Ver';
+    });
+</script>
+
+</body>
+</html>

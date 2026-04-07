@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Home</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/marque.css}">
+    <link rel="stylesheet" th:href="@{/css/cursor.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="fragments/marque :: marque_topo"></div>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<section class="hero">
+    <div class="hero-slides">
+        <div th:each="slide, stat : ${slides}"
+             class="slide"
+             th:classappend="${stat.index == 0} ? ' active'"
+             th:style="'background-image: url(' + ${slide.imagem} + ')'"
+             th:data-link="${slide.link}">
+
+            <div class="hero-left">
+                <div class="hero-actions">
+                    <a id="heroBtn" th:href="${slide.link}" class="btn-primary">Ver coleção</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-line"></div>
+</section>
+
+<!-- Products -->
+<section class="products-section reveal" id="produtos">
+    <div class="section-header">
+        <h2 class="section-title">Best Sellers</h2>
+        <a href="#" class="section-link">Ver todos</a>
+    </div>
+    <div class="products-grid">
+
+        <!-- Card 1 -->
+        <div class="product-card">
+            <div class="product-img-wrap">
+                <img src="/imagens/camiseta.png" alt="T-Shirt Oversized Preta" class="product-img">
+
+                <div class="product-img-bg card-bg-1">TEE</div>
+                <span class="product-badge badge-new">Novo</span>
+                <button class="product-quick" onclick="addCart()">Comprar rápido</button>
+            </div>
+            <div class="product-info">
+                <div class="product-name">T-Shirt Oversized Preta</div>
+                <div class="product-sizes">
+                    <span class="size-dot">PP</span><span class="size-dot">·</span>
+                    <span class="size-dot">P</span><span class="size-dot">·</span>
+                    <span class="size-dot">M</span><span class="size-dot">·</span>
+                    <span class="size-dot">G</span>
+                </div>
+                <div class="product-price">R$ 219,90</div>
+                <div class="product-installment">3x de R$ 73,30 sem juros</div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="product-card">
+            <div class="product-img-wrap">
+                <img src="/imagens/moletom.png" alt="Moletom Canguru Preta" class="product-img">
+
+                <div class="product-img-bg card-bg-2">MLL</div>
+                <span class="product-badge badge-new">Novo</span>
+                <button class="product-quick" onclick="addCart()">Comprar rápido</button>
+            </div>
+            <div class="product-info">
+                <div class="product-name">Moletom Canguru Preta</div>
+                <div class="product-sizes">
+                    <span class="size-dot">P</span><span class="size-dot">·</span>
+                    <span class="size-dot">M</span><span class="size-dot">·</span>
+                    <span class="size-dot">G</span><span class="size-dot">·</span>
+                    <span class="size-dot">GG</span>
+                </div>
+                <div class="product-price">R$ 189,90</div>
+                <div class="product-installment">3x de R$ 63,30 sem juros</div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="product-card">
+            <div class="product-img-wrap">
+                <img src="/imagens/camiseta2.png" alt="T-Shirt Oversized Preta" class="product-img">
+
+                <div class="product-img-bg card-bg-3">JNS</div>
+                <span class="product-badge badge-d">Sale</span>
+                <button class="product-quick" onclick="addCart()">Comprar rápido</button>
+            </div>
+            <div class="product-info">
+                <div class="product-name">T-Shirt Oversized Preta</div>
+                <div class="product-sizes">
+                    <span class="size-dot">38</span><span class="size-dot">·</span>
+                    <span class="size-dot">40</span><span class="size-dot">·</span>
+                    <span class="size-dot">42</span><span class="size-dot">·</span>
+                    <span class="size-dot">44</span>
+                </div>
+                <div class="product-price">
+                    <span class="product-price-old">R$ 159,90</span>R$ 119,90
+                </div>
+                <div class="product-installment">3x de R$ 39,97 sem juros</div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="product-card">
+            <div class="product-img-wrap">
+                <div class="product-img-bg card-bg-4">TNS</div>
+                <span class="product-badge badge-new">Novo</span>
+                <button class="product-quick" onclick="addCart()">Comprar rápido</button>
+            </div>
+            <div class="product-info">
+                <div class="product-name">Tênis Air Casual Branco</div>
+                <div class="product-sizes">
+                    <span class="size-dot">38</span><span class="size-dot">·</span>
+                    <span class="size-dot">39</span><span class="size-dot">·</span>
+                    <span class="size-dot">40</span><span class="size-dot">·</span>
+                    <span class="size-dot">41</span>
+                </div>
+                <div class="product-price">R$ 299,90</div>
+                <div class="product-installment">3x de R$ 99,97 sem juros</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!--<div class="drop-banner reveal">-->
+<!--    <div class="drop-banner-content">-->
+<!--        <p class="drop-banner-tag">— Drop exclusivo</p>-->
+<!--        <h2 class="drop-banner-title">Tênis<br>Running Pro</h2>-->
+<!--        <p class="drop-banner-text">Amortecimento reativo para quem não para. Disponível em tamanhos 39–42.</p>-->
+<!--        <a href="#" class="btn-primary" style="align-self:flex-start">Comprar agora — R$ 449,90</a>-->
+<!--    </div>-->
+<!--    <div class="drop-banner-visual">PRO</div>-->
+<!--</div>-->
+
+<section class="categories-section reveal">
+    <div class="section-header">
+        <h2 class="section-title">Coleções</h2>
+        <a href="#" class="section-link">Ver todas</a>
+    </div>
+    <div class="categories-grid">
+        <div class="category-card">
+            <div class="cat-bg cat-bg-1">CAM</div>
+            <div class="category-info">
+                <div class="category-name">Alucard</div>
+                <div class="category-count">12 produtos</div>
+            </div>
+        </div>
+        <div class="category-card">
+            <div class="cat-bg cat-bg-2">TNS</div>
+            <div class="category-info">
+                <div class="category-name">Divino</div>
+                <div class="category-count">8 produtos</div>
+            </div>
+        </div>
+        <div class="category-card">
+            <div class="cat-bg cat-bg-3">MLT</div>
+            <div class="category-info">
+                <div class="category-name">Morte</div>
+                <div class="category-count">6 produtos</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="perks-bar reveal">
+    <div class="perk">
+        <div class="perk-icon">✈</div>
+        <div>
+            <div class="perk-label">Frete Grátis</div>
+            <div class="perk-sub">Compras acima de R$499</div>
+        </div>
+    </div>
+    <div class="perk">
+        <div class="perk-icon">↩</div>
+        <div>
+            <div class="perk-label">Troca Fácil</div>
+            <div class="perk-sub">30 dias para trocar</div>
+        </div>
+    </div>
+    <div class="perk">
+        <div class="perk-icon">■</div>
+        <div>
+            <div class="perk-label">Pix com desconto</div>
+            <div class="perk-sub">5% off no pagamento à vista</div>
+        </div>
+    </div>
+    <div class="perk">
+        <div class="perk-icon">☑</div>
+        <div>
+            <div class="perk-label">Compra Segura</div>
+            <div class="perk-sub">Site 100% protegido</div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="reveal">
+    <div>
+        <div class="footer-brand">nemesis</div>
+        <p class="footer-tagline">Estilo de roupas feitos para quem vive na escuridão. Drops limitados, qualidade sem compromisso.</p>
+        <div class="footer-social">
+            <a href="#" class="social-btn">IG</a>
+            <a href="#" class="social-btn">TK</a>
+            <a href="#" class="social-btn">WA</a>
+        </div>
+    </div>
+<!--    <div>-->
+<!--        <div class="footer-col-title">Loja</div>-->
+<!--        <ul class="footer-links">-->
+<!--            <li><a href="#">Lançamentos</a></li>-->
+<!--            <li><a href="#">Roupas</a></li>-->
+<!--            <li><a href="#">Tênis</a></li>-->
+<!--            <li><a href="#">Sale</a></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <div class="footer-col-title">Ajuda</div>-->
+<!--        <ul class="footer-links">-->
+<!--            <li><a href="#">Meu pedido</a></li>-->
+<!--            <li><a href="#">Trocas e devoluções</a></li>-->
+<!--            <li><a href="#">Guia de tamanhos</a></li>-->
+<!--            <li><a href="#">Contato</a></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <div class="footer-col-title">Institucional</div>-->
+<!--        <ul class="footer-links">-->
+<!--            <li><a href="#">Sobre nós</a></li>-->
+<!--            <li><a href="#">Política de privacidade</a></li>-->
+<!--            <li><a href="#">Termos de uso</a></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+</footer>
+<div class="footer-bottom">
+    <span class="footer-copy">© 2025 nemesis. Todos os direitos reservados.</span>
+    <span class="footer-copy">CNPJ 00.000.000/0001-00</span>
+</div>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top  = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .product-card, .category-card').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+
+    let count = 0;
+    function addCart() {
+        count++;
+        document.getElementById('cart-count').textContent = count;
+    }
+
+    // fade no scroll
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const slides = document.querySelectorAll('.slide');
+        const button = document.getElementById('heroBtn');
+
+        let current = 0;
+
+        setInterval(() => {
+            slides[current].classList.remove('active');
+
+            current++;
+            if (current >= slides.length) {
+                current = 0;
+            }
+
+            slides[current].classList.add('active');
+
+            button.href = slides[current].dataset.link;
+
+        }, 4000);
+    });
+</script>
+</body>
+</html>

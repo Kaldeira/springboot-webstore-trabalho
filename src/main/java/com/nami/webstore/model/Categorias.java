@@ -20,7 +20,7 @@ public class Categorias {
     @Column(name = "criado_em", updatable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(mappedBy = "categoriaId")
     private List<Produtos> produtos;
 
     // Getters e Setters

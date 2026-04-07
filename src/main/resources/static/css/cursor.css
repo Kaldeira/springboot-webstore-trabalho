@@ -1,0 +1,18 @@
+#cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: darkred;
+    border-radius: 50%;
+    box-shadow: 0 0 10px red, 0 0 20px crimson;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform .1s, width .25s, height .25s, background .2s;
+    mix-blend-mode: difference;
+}
+
+#cursor.big {
+    width: 40px;
+    height: 40px;
+}

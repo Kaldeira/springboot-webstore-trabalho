@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<!--
+  Acesso restrito via Spring Security — configure no SecurityConfig:
+    .requestMatchers("/admin/**").hasAnyRole("ADMIN", "FUNCIONARIO")
+
+  O Thymeleaf Security Extras (sec:authorize) exige a dependência:
+    <dependency>
+      <groupId>org.thymeleaf.extras</groupId>
+      <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+    </dependency>
+-->
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Panel</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}" />
+    <link rel="stylesheet" th:href="@{/css/panel.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-left">
+        <a th:href="@{/}" class="nav-logo">nemesis</a>
+        <div class="nav-breadcrumb">
+            <span class="sep">/</span>
+            <a th:href="@{/admin}">Admin</a>
+            <span class="sep">/</span>
+            <span class="current">Novo produto</span>
+        </div>
+    </div>
+    <div class="nav-right">
+      "  <span th:if="${session.usuarioLogado.nome != null}" class="nav-user" th:text="${session.usuarioLogado.nome}">Usuário</span>
+        <!--        <span class="nav-user" th:text="${session.usuarioLogado.tipo.ordinal()}">Usuário</span>-->
+
+        <span th:if="${session.usuarioLogado.tipo.ordinal() == 0}" class="role-badge admin"> Admin</span>
+        <span th:if="${session.usuarioLogado.tipo.ordinal() == 2}" class="role-badge func"> Funcionário </span>
+
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="logout-btn">Sair</button>
+        </form>
+    </div>
+</nav>
+
+<div class="page-wrap">
+
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Catálogo</div>
+            <a th:href="@{/admin/produtos/novo}" class="sidebar-link active">
+                <span class="icon">＋</span> Novo produto
+            </a>
+            <a th:href="@{/admin/produtos}" class="sidebar-link">
+                <span class="icon">▤</span> Todos os produtos
+            </a>
+            <a th:href="@{/admin/categorias}" class="sidebar-link">
+                <span class="icon">◈</span> Categorias
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Vendas</div>
+            <a th:href="@{/admin/pedidos}" class="sidebar-link">
+                <span class="icon">◉</span> Pedidos
+            </a>
+            <a th:href="@{/admin/estoque}" class="sidebar-link">
+                <span class="icon">◫</span> Estoque
+            </a>
+        </div>
+
+        <!--
+          sec:authorize="hasRole('ADMIN')" — apenas admins (tipo 0) veem esta seção.
+          Funcionários (tipo 2) não enxergam o bloco abaixo.
+        -->
+        <div class="sidebar-section" >
+            <div class="sidebar-label">Gestão</div>
+            <a th:href="@{/admin/usuarios}" class="sidebar-link">
+                <span class="icon">◎</span> Usuários
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <div class="page-header">
+            <p class="page-tag">— Catálogo / Novo</p>
+            <h1 class="page-title">Adicionar<br>Produto</h1>
+            <p class="page-desc">Preencha as informações abaixo para cadastrar um novo produto.</p>
+        </div>
+
+        <!--
+          Flash messages vindas do controller via RedirectAttributes:
+            redirectAttributes.addFlashAttribute("flashSucesso", "Produto salvo!");
+            redirectAttributes.addFlashAttribute("flashErro", "Erro ao salvar.");
+        -->
+        <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+        <div class="flash error"   th:if="${flashErro}"    th:text="${flashErro}"></div>
+
+        <!--
+          th:object="${produtoForm}" — controller injeta um ProdutoForm vazio no Model:
+            model.addAttribute("produtoForm", new ProdutoForm());
+
+          th:action="@{/admin/produtos}" method="post" — MapPOST no controller.
+
+          enctype="multipart/form-data" — necessário para upload de imagens.
+        -->
+        <form th:action="@{/admin/produtos}"
+              th:object="${produtoForm}"
+              method="post"
+              enctype="multipart/form-data"
+              id="produto-form"
+              novalidate>
+
+            <div class="form-sections">
+
+                <!-- ── Coluna principal ── -->
+                <div>
+
+                    <!-- Informações gerais -->
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <span class="form-card-title">Informações gerais</span>
+                        </div>
+                        <div class="form-card-body">
+
+                            <div class="field-group">
+                                <label class="field-label" for="nome">
+                                    Nome do produto <span class="req">*</span>
+                                </label>
+                                <input class="field-input"
+                                       id="nome" type="text"
+                                       th:field="*{nome}"
+                                       th:classappend="${#fields.hasErrors('nome')} ? 'input-err'"
+                                       placeholder="Ex: T-Shirt Oversized Preta"
+                                       maxlength="200"/>
+                                <div class="field-error-msg" th:if="${#fields.hasErrors('nome')}"
+                                     th:errors="*{nome}"></div>
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label" for="descricao">
+                                    Descrição <span class="opt">Opcional</span>
+                                </label>
+                                <textarea class="field-textarea"
+                                          id="descricao"
+                                          th:field="*{descricao}"
+                                          placeholder="Descreva o produto, materiais, caimento…"></textarea>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="categoriaId">
+                                        Categoria <span class="req">*</span>
+                                    </label>
+                                    <!--
+                                      th:field="*{categoriaId}" — bind para Long categoriaId no ProdutoForm.
+                                      th:each itera sobre a lista "categorias" injetada pelo controller:
+                                        model.addAttribute("categorias", categoriaService.listarTodas());
+                                    -->
+                                    <select class="field-select"
+                                            id="categoriaId"
+                                            th:field="*{categoriaId}"
+                                            th:classappend="${#fields.hasErrors('categoriaId')} ? 'input-err'">
+
+                                        <option value="">Selecione...</option>
+
+                                        <option th:each="cat : ${allCategorias}"
+                                                th:value="${cat.id}"
+                                                th:text="${cat.nome}">
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="preco">
+                                        Preço <span class="req">*</span>
+                                    </label>
+                                    <div class="field-prefix-wrap">
+                                        <span class="field-prefix">R$</span>
+                                        <input class="field-input"
+                                               id="preco" type="number"
+                                               th:field="*{preco}"
+                                               th:classappend="${#fields.hasErrors('preco')} ? 'input-err'"
+                                               placeholder="0,00" min="0" step="0.01"/>
+                                    </div>
+                                    <div class="field-error-msg" th:if="${#fields.hasErrors('preco')}"
+                                         th:errors="*{preco}"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Variantes -->
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <span class="form-card-title">Variantes</span>
+                            <span style="font-size:11px;color:var(--muted);font-family:var(--font-cond);letter-spacing:.1em">
+                Tamanho + Cor + Estoque
+              </span>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="var-header">
+                                <div class="var-col-label">Tamanho</div>
+                                <div class="var-col-label">Cor</div>
+                                <div class="var-col-label">Estoque</div>
+                                <div></div>
+                            </div>
+
+                            <!--
+                              Variantes são adicionadas/removidas via JS e enviadas como campos indexados:
+                                variantes[0].tamanho, variantes[0].cor, variantes[0].estoque
+                                variantes[1].tamanho, …
+                              O ProdutoForm deve ter: List<VarianteForm> variantes
+                            -->
+                            <div class="variantes-list" id="variantes-list"></div>
+                            <div class="field-error-msg" id="err-variantes" style="display:none;margin-bottom:10px">
+                                Adicione ao menos uma variante.
+                            </div>
+                            <button type="button" class="btn-add-var" onclick="addVariante()">
+                                + Adicionar variante
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ── Coluna lateral ── -->
+                <div>
+
+                    <!-- Disponibilidade -->
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <span class="form-card-title">Disponibilidade</span>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="toggle-wrap">
+                                <label class="toggle-track">
+                                    <input type="checkbox" th:field="*{ativo}" id="ativo"/>
+                                    <span class="toggle-thumb"></span>
+                                </label>
+                                <span class="toggle-label">Produto ativo na loja</span>
+                            </div>
+                            <p class="field-hint" style="margin-top:14px">
+                                Produtos inativos ficam ocultos para clientes mas permanecem no catálogo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Imagens -->
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <span class="form-card-title">Imagens</span>
+                        </div>
+                        <div class="form-card-body">
+                            <!--
+                              name="imagens" — no controller: @RequestParam("imagens") List<MultipartFile> imagens
+                              O Thymeleaf não faz bind automático de MultipartFile via th:field em listas,
+                              então usamos name direto e tratamos no @PostMapping.
+                            -->
+                            <div class="upload-area" id="upload-area">
+                                <input type="file" id="f-imagens" name="imagens"
+                                       multiple accept="image/*"
+                                       onchange="handleImages(this.files)"/>
+                                <div class="upload-icon">⬆</div>
+                                <div class="upload-text">
+                                    Arraste ou <span class="upload-accent">clique aqui</span>
+                                </div>
+                                <div class="upload-sub">PNG, JPG ou WEBP · máx. 5MB cada</div>
+                            </div>
+                            <div class="image-previews" id="image-previews"></div>
+                            <p class="field-hint" style="margin-top:10px">
+                                A primeira imagem adicionada será definida como principal.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Barra de submit -->
+            <div class="submit-bar">
+                <div class="submit-info">
+                    Campos com <strong>*</strong> são obrigatórios
+                </div>
+                <div class="submit-actions">
+                    <a th:href="@{/admin/produtos}" class="btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn-save" id="btn-save">
+                        <span>Salvar produto</span>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </main>
+</div>
+
+<script>
+    // ── Cursor ──
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top  = e.clientY + 'px';
+    });
+    function bindCursor() {
+        document.querySelectorAll('a, button, input, select, textarea, label, .upload-area').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+        });
+    }
+    bindCursor();
+
+    let varIdx = 0;
+
+    function addVariante(tam = '', cor = '', est = '') {
+        const i = varIdx++;
+        const row = document.createElement('div');
+        row.className = 'variante-row'; row.dataset.idx = i;
+        /*
+          name="variantes[i].tamanho" etc. — Spring MVC faz bind automático
+          em List<VarianteForm> variantes quando os índices são contíguos.
+          Ao remover uma linha, os índices ficam com lacuna — o JS renumera.
+        */
+        row.innerHTML = `
+      <input class="field-input" type="text"
+             name="variantes[${i}].tamanho" value="${tam}"
+             placeholder="P, M, G, 38…" style="padding:10px 12px;font-size:13px"/>
+      <input class="field-input" type="text"
+             name="variantes[${i}].cor" value="${cor}"
+             placeholder="Preto, Branco…" style="padding:10px 12px;font-size:13px"/>
+      <input class="field-input" type="number"
+             name="variantes[${i}].estoque" value="${est}" min="0"
+             placeholder="0" style="padding:10px 12px;font-size:13px;text-align:center"/>
+      <button type="button" class="btn-rm-var" onclick="removeVariante(this)">×</button>
+    `;
+        document.getElementById('variantes-list').appendChild(row);
+        reindex();
+        bindCursor();
+    }
+
+    function removeVariante(btn) {
+        btn.closest('.variante-row').remove();
+        reindex();
+    }
+
+    // renumera os índices após remoção para manter list binding contíguo
+    function reindex() {
+        document.querySelectorAll('.variante-row').forEach((row, i) => {
+            row.querySelectorAll('input').forEach(inp => {
+                inp.name = inp.name.replace(/variantes\[\d+\]/, `variantes[${i}]`);
+            });
+        });
+    }
+
+    addVariante();
+
+    let imageFiles = [];
+
+    function handleImages(files) {
+        [...files].forEach(f => {
+            if (f.size > 5 * 1024 * 1024) { alert('Arquivo muito grande: ' + f.name); return; }
+            imageFiles.push(f);
+        });
+        renderPreviews();
+    }
+
+    function renderPreviews() {
+        const container = document.getElementById('image-previews');
+        container.innerHTML = '';
+        imageFiles.forEach((file, i) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const wrap = document.createElement('div');
+                wrap.className = 'img-preview';
+                wrap.innerHTML = `
+          <img src="${e.target.result}" alt="preview"/>
+          ${i === 0 ? '<div class="img-principal-dot" title="Imagem principal"></div>' : ''}
+          <button type="button" class="rm-img" onclick="removeImage(${i})">×</button>
+        `;
+                container.appendChild(wrap);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removeImage(i) {
+        imageFiles.splice(i, 1);
+        // Sincroniza o input de arquivo com o array atualizado
+        const dt = new DataTransfer();
+        imageFiles.forEach(f => dt.items.add(f));
+        document.getElementById('f-imagens').files = dt.files;
+        renderPreviews();
+    }
+
+    const ua = document.getElementById('upload-area');
+    ua.addEventListener('dragover', e => { e.preventDefault(); ua.classList.add('dragover'); });
+    ua.addEventListener('dragleave', () => ua.classList.remove('dragover'));
+    ua.addEventListener('drop', e => {
+        e.preventDefault(); ua.classList.remove('dragover');
+        handleImages(e.dataTransfer.files);
+    });
+
+    document.getElementById('produto-form').addEventListener('submit', function(e) {
+        const rows = document.querySelectorAll('.variante-row');
+        const errEl = document.getElementById('err-variantes');
+        if (rows.length === 0) {
+            e.preventDefault();
+            errEl.style.display = 'block';
+            errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            errEl.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

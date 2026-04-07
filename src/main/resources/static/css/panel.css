@@ -1,0 +1,730 @@
+@import "global.css";
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-logo {
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 28px;
+    letter-spacing: .06em;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.nav-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-cond);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.nav-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .2s;
+    cursor: none;
+}
+
+.nav-breadcrumb a:hover {
+    color: var(--text);
+}
+
+.nav-breadcrumb .sep {
+    color: rgba(255, 255, 255, .18);
+}
+
+.nav-breadcrumb .current {
+    color: var(--accent);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-user {
+    font-family: var(--font-cond);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.role-badge {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+}
+
+/* sec:authorize mostra só o badge correto */
+.role-badge.admin {
+    border-color: rgba(200, 240, 74, .3);
+    color: var(--accent);
+}
+
+.role-badge.func {
+    border-color: rgba(255, 255, 255, .15);
+    color: var(--text);
+}
+
+/* Botão de logout — usa form POST para invalidar a sessão via Spring Security */
+.logout-form {
+    margin: 0;
+}
+
+.logout-btn {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: none;
+    transition: color .2s;
+}
+
+.logout-btn:hover {
+    color: var(--accent2);
+}
+
+/* ── Layout ── */
+.page-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 97px);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    border-right: 1px solid var(--border);
+    padding: 36px 0;
+    position: sticky;
+    top: 97px;
+    height: calc(100vh - 97px);
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    margin-bottom: 32px;
+}
+
+.sidebar-label {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 28px;
+    margin-bottom: 6px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 28px;
+    font-family: var(--font-cond);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color .2s, background .2s, border-color .2s;
+    cursor: none;
+}
+
+.sidebar-link:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, .03);
+}
+
+.sidebar-link.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(200, 240, 74, .04);
+}
+
+.sidebar-link .icon {
+    width: 16px;
+    font-size: 14px;
+    opacity: .6;
+}
+
+/* ── Conteúdo ── */
+.content {
+    padding: 48px 52px;
+    animation: fadeIn .4s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+.page-header {
+    margin-bottom: 40px;
+}
+
+.page-tag {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4vw, 60px);
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.page-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* ── Toast de sucesso / erro (via Model attribute "flash") ── */
+.flash {
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.flash.success {
+    background: rgba(200, 240, 74, .08);
+    border: 1px solid rgba(200, 240, 74, .25);
+    color: var(--accent);
+}
+
+.flash.error {
+    background: rgba(255, 60, 46, .08);
+    border: 1px solid rgba(255, 60, 46, .25);
+    color: var(--accent2);
+}
+
+/* ── Erros de validação (BindingResult) ── */
+.field-error-msg {
+    margin-top: 7px;
+    font-family: var(--font-cond);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    color: var(--accent2);
+}
+
+/* ── Grid de seções ── */
+.form-sections {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+.form-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+
+.form-card-header {
+    padding: 18px 26px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form-card-title {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.form-card-body {
+    padding: 26px;
+}
+
+/* ── Campos ── */
+.field-group {
+    margin-bottom: 20px;
+}
+
+.field-group:last-child {
+    margin-bottom: 0;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.field-label .req {
+    color: var(--accent2);
+    margin-left: 3px;
+}
+
+.field-label .opt {
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: rgba(107, 103, 96, .55);
+}
+
+.field-input, .field-select, .field-textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.field-input::placeholder, .field-textarea::placeholder {
+    color: var(--muted);
+}
+
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--accent);
+    background: #131313;
+}
+
+/* th:classappend="${#fields.hasErrors('campo')} ? 'input-err'" */
+.field-input.input-err, .field-select.input-err, .field-textarea.input-err {
+    border-color: var(--accent2);
+}
+
+.field-textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+}
+
+.field-select {
+    cursor: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6760' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+}
+
+.field-select option {
+    background: #1a1a1a;
+    color: var(--text);
+}
+
+.field-hint {
+    margin-top: 7px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* Prefixo R$ */
+.field-prefix-wrap {
+    position: relative;
+}
+
+.field-prefix {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .06em;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    pointer-events: none;
+}
+
+.field-prefix-wrap .field-input {
+    padding-left: 52px;
+}
+
+/* Toggle ativo */
+.toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.toggle-track {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    cursor: none;
+    transition: background .2s, border-color .2s;
+    flex-shrink: 0;
+}
+
+.toggle-track:has(input:checked) {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: var(--muted);
+    transition: transform .2s, background .2s;
+    pointer-events: none;
+}
+
+.toggle-track:has(input:checked) .toggle-thumb {
+    transform: translateX(20px);
+    background: #0a0a0a;
+}
+
+.toggle-track input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: none;
+    margin: 0;
+}
+
+.toggle-label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ── Variantes dinâmicas ── */
+.var-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 90px 36px;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.var-col-label {
+    font-family: var(--font-cond);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.variantes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.variante-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 90px 36px;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Campos de variante dentro do form principal — usam name indexado para bind no controller lembrar disso aq */
+.variante-row .field-input {
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.btn-rm-var {
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 16px;
+    cursor: none;
+    display: grid;
+    place-items: center;
+    transition: border-color .2s, color .2s;
+}
+
+.btn-rm-var:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+}
+
+.btn-add-var {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    padding: 10px 16px;
+    cursor: none;
+    width: 100%;
+    transition: border-color .2s, color .2s;
+}
+
+.btn-add-var:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ── Upload de imagem ── */
+.upload-area {
+    border: 1px dashed var(--border);
+    padding: 36px 24px;
+    text-align: center;
+    cursor: none;
+    transition: border-color .2s, background .2s;
+    position: relative;
+}
+
+.upload-area:hover, .upload-area.dragover {
+    border-color: var(--accent);
+    background: rgba(200, 240, 74, .03);
+}
+
+.upload-area input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: none;
+}
+
+.upload-icon {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: var(--muted);
+}
+
+.upload-text {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.upload-accent {
+    color: var(--accent);
+}
+
+.upload-sub {
+    font-size: 11px;
+    color: rgba(107, 103, 96, .6);
+}
+
+.image-previews {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.img-preview {
+    aspect-ratio: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.img-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-preview .rm-img {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    background: rgba(0, 0, 0, .75);
+    border: none;
+    cursor: none;
+    color: #fff;
+    font-size: 12px;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.img-preview:hover .rm-img {
+    opacity: 1;
+}
+
+.img-principal-dot {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+/* ── Barra de submit ── */
+.submit-bar {
+    position: sticky;
+    bottom: 0;
+    background: rgba(10, 10, 10, 0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 18px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 -52px;
+}
+
+.submit-info {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.submit-info strong {
+    color: var(--accent2);
+}
+
+.submit-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-cancel {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 13px 28px;
+    cursor: none;
+    transition: border-color .2s, color .2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-cancel:hover {
+    border-color: var(--border-h);
+    color: var(--text);
+}
+
+.btn-save {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    padding: 13px 36px;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-save::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform .3s;
+}
+
+.btn-save:hover::after {
+    transform: translateX(0);
+}
+
+.btn-save span {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-save:hover span {
+    color: #0a0a0a;
+}
