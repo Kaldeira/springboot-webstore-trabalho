@@ -11,15 +11,39 @@
         <a href="#" class="nav-logo">nemesis</a>
         <ul class="nav-links">
             <li><a href="#" class="active">Lançamentos</a></li>
-            <li><a th:href="@{/panelProdutos}">Roupas</a></li>
+            <li><a href="#">Roupas</a></li>
             <li><a href="#">Tênis</a></li>
-            <li><a href="../sale.html">Sale</a></li>
+            <li><a href="#">Sale</a></li>
+            <li  th:if="${session.usuarioLogado != null && session.usuarioLogado.getTipo().ordinal() == 0}">
+                <a th:href="@{/panelProdutos}">Painel Funcionarios</a>
+            </li>
         </ul>
         <div class="nav-right">
-            <a th:href="@{/login}" class="login-btn">
+
+            <!-- se n estiver logado -->
+            <a th:if="${session.usuarioLogado == null}"
+               th:href="@{/login}"
+               class="login-btn">
                 <i class="fa-solid fa-user"></i>
                 Login
             </a>
+
+            <!-- se estiver logado -->
+            <a th:if="${session.usuarioLogado != null}"
+               th:href="@{/perfil}"
+               class="login-btn">
+                <i class="fa-solid fa-user"></i>
+                <span th:text="${session.usuarioLogado.nome}"></span>
+            </a>
+
+            <form th:if="${session.usuarioLogado != null}" th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="login-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Sair
+                </button>
+            </form>
+<!--            </a>-->
+
 
             <button class="cart-btn">
                 <i class="fa-solid fa-cart-shopping"></i>

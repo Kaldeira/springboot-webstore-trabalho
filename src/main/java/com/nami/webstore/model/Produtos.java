@@ -37,8 +37,8 @@ public class Produtos {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
     private List<Variante> variantes;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private List<ImagemProduto> imagens;
+//    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
+//    private List<ImagemProduto> imagens;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -69,8 +69,8 @@ public class Produtos {
     public List<Variante> getVariantes() { return variantes; }
     public void setVariantes(List<Variante> variantes) { this.variantes = variantes; }
 
-    public List<ImagemProduto> getImagens() { return imagens; }
-    public void setImagens(List<ImagemProduto> imagens) { this.imagens = imagens; }
+//    public List<ImagemProduto> getImagens() { return imagens; }
+//    public void setImagens(List<ImagemProduto> imagens) { this.imagens = imagens; }
 
     @PreUpdate
     public void preUpdate() { this.atualizadoEm = LocalDateTime.now(); }

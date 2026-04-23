@@ -35,32 +35,46 @@ public class ProdutosController {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    // GET /admin/produtos/novo — exibe o formulário em branco
-    @GetMapping("/novo")
-    public String novoForm(Model model) {
-        model.addAttribute("produtoForm", new Produtos());
-        model.addAttribute("categorias", categoriaService.listarTodas());
-        return "admin-produto"; // resolve para templates/admin-produto.html
-    }
-
-    // POST /admin/produtos — processa o envio do formulário
     @PostMapping("/admin/produtos")
     public String salvar(
             @Valid @ModelAttribute("produtoForm") Produtos form,
             BindingResult bindingResult,
-            @RequestParam(value = "imagens", required = false) List<MultipartFile> imagens,
+            @RequestParam("imagens") List<MultipartFile> imagens,
             Model model,
             RedirectAttributes redirectAttributes) {
 
         if (form.getVariantes() == null || form.getVariantes().isEmpty()) {
-            bindingResult.rejectValue("variantes", "variantes.empty",
+            redirectAttributes.addFlashAttribute("flashErro",
                     "Adicione ao menos uma variante.");
+
+            for (var v : form.getVariantes())
+            {
+                if (v.getTamanho().isEmpty() || v.getEstoque() <= 0 || v.getCor().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("flashErro",
+                            "Algo de errado com as variantes.");
+
+                    return "redirect:/panelProdutos";
+                }
+            }
+
+            model.addAttribute("allCategorias", categoriaService.listarTodas());
+            model.addAttribute("produtoForm", form);
+
+            return "redirect:/panelProdutos";
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("categorias", categoriaService.listarTodas());
+            bindingResult.getAllErrors().forEach(err -> {
+                System.out.println(err.toString());
+            });
+
+            redirectAttributes.addFlashAttribute("flashErro",
+                    "Falha ao salvar produto!");
+
+            model.addAttribute("allCategorias", categoriaService.listarTodas());
             model.addAttribute("produtoForm", form);
-            return "panelProdutos";
+
+            return "redirect:/panelProdutos";
         }
 
         try {
@@ -69,12 +83,16 @@ public class ProdutosController {
             redirectAttributes.addFlashAttribute("flashSucesso",
                     "Produto \"" + form.getNome() + "\" salvo com sucesso!");
 
-            return "redirect:/admin/produtos/novo";
+            model.addAttribute("allCategorias", categoriaService.listarTodas()); // tem q passar as categorias de novo sempre
+          //  model.addAttribute("flashSucesso", "Produto salvo com sucesso!");
+
+            return "redirect:/panelProdutos";
 
         } catch (Exception e) {
+            System.out.println("Erro ao salvar:");
             e.printStackTrace();
 
-            model.addAttribute("categorias", categoriaService.listarTodas());
+            model.addAttribute("allCategorias", categoriaService.listarTodas());
             model.addAttribute("produtoForm", form);
             model.addAttribute("flashErro", "Erro ao salvar produto.");
 
@@ -87,11 +105,13 @@ public class ProdutosController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("/panelProdutos");
         modelAndView.addObject("produtoForm", new Produtos());
-        modelAndView.addObject("allCategorias", categoriaRepository.findAll());
+        modelAndView.addObject("allCategorias", categoriaService.listarTodas());
 
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
-        if (usuario == null || usuario.getTipo().ordinal() == 1) {
+        //check de permissao
+        if (usuario == null || usuario.getTipo().toString().equals("COMUM")) {
+            System.out.println("Usuario não é valido");
             return new ModelAndView("redirect:/");
         }
 
