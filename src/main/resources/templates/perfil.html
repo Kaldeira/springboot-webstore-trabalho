@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Meu Perfil</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="perfil-wrap">
+
+    <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+    <div class="flash error"   th:if="${flashErro}"    th:text="${flashErro}"></div>
+
+    <div class="perfil-header">
+        <div class="perfil-avatar"
+             th:text="${#strings.substring(usuario.nome, 0, 1).toUpperCase()}">U</div>
+        <div class="perfil-header-info">
+            <p class="perfil-tag">— Meu Perfil</p>
+            <h1 class="perfil-nome" th:text="${usuario.nome}">Usuário</h1>
+            <span class="perfil-tipo"
+                  th:classappend="${usuario.tipo.name() == 'ADMIN'} ? 'admin' : (${usuario.tipo.name() == 'FUNCIONARIO'} ? 'func' : 'comum')"
+                  th:text="${usuario.tipo.name()}">TIPO</span>
+        </div>
+    </div>
+
+    <div th:if="${usuario.tipo.name() == 'ADMIN'}">
+        <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start">
+
+            <div class="form-card">
+                <div class="form-card-header">
+                    <span class="form-card-title">Dados da conta</span>
+                </div>
+                <div class="form-card-body">
+                    <form th:action="@{/perfil/dados}" method="post">
+                        <div class="field-row" style="margin-bottom:16px">
+                            <div class="field-group" style="margin-bottom:0">
+                                <label class="field-label" for="nome-admin">Nome <span class="req">*</span></label>
+                                <input class="field-input" id="nome-admin" name="nome" type="text"
+                                       th:value="${usuario.nome}" required/>
+                            </div>
+                            <div class="field-group" style="margin-bottom:0">
+                                <label class="field-label" for="email-admin">E-mail <span class="req">*</span></label>
+                                <input class="field-input" id="email-admin" name="email" type="email"
+                                       th:value="${usuario.email}" required/>
+                            </div>
+                        </div>
+                        <div class="field-row" style="margin-bottom:20px">
+                            <div class="field-group" style="margin-bottom:0">
+                                <label class="field-label" for="tel-admin">Telefone <span class="opt">Opcional</span></label>
+                                <input class="field-input" id="tel-admin" name="telefone" type="text"
+                                       th:value="${usuario.telefone}" placeholder="(00) 00000-0000"/>
+                            </div>
+                            <div class="field-group" style="margin-bottom:0">
+                                <label class="field-label" for="senha-admin">Nova senha <span class="opt">Opcional</span></label>
+                                <input class="field-input" id="senha-admin" name="senha" type="password"
+                                       placeholder="Deixe em branco para manter"/>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end">
+                            <button type="submit" class="btn-save"><span>Salvar dados</span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Painel Admin</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="admin-shortcut">
+                            <a th:href="@{/painel/produtos}" class="shortcut-link">
+                                <i class="fa-solid fa-box"></i> Gerenciar produtos
+                            </a>
+                            <a th:href="@{/painel/pedidos}" class="shortcut-link">
+                                <i class="fa-solid fa-receipt"></i> Ver pedidos
+                            </a>
+                            <a th:href="@{/painel/usuarios}" class="shortcut-link">
+                                <i class="fa-solid fa-users"></i> Gerenciar usuários
+                            </a>
+                            <a th:href="@{/painel/categorias}" class="shortcut-link">
+                                <i class="fa-solid fa-tags"></i> Categorias
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${usuario.tipo.name() == 'FUNCIONARIO'}">
+        <div class="perfil-grid">
+
+            <div>
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Meus dados</span>
+                    </div>
+                    <div class="form-card-body">
+                        <form th:action="@{/perfil/dados}" method="post">
+                            <div class="field-row" style="margin-bottom:16px">
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="nome-func">Nome <span class="req">*</span></label>
+                                    <input class="field-input" id="nome-func" name="nome" type="text"
+                                           th:value="${usuario.nome}" required/>
+                                </div>
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="email-func">E-mail <span class="req">*</span></label>
+                                    <input class="field-input" id="email-func" name="email" type="email"
+                                           th:value="${usuario.email}" required/>
+                                </div>
+                            </div>
+                            <div class="field-row" style="margin-bottom:16px">
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="cpf-func">CPF <span class="opt">Opcional</span></label>
+                                    <input class="field-input" id="cpf-func" name="cpf" type="text"
+                                           th:value="${usuario.cpf}" placeholder="000.000.000-00"/>
+                                </div>
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="tel-func">Telefone <span class="opt">Opcional</span></label>
+                                    <input class="field-input" id="tel-func" name="telefone" type="text"
+                                           th:value="${usuario.telefone}" placeholder="(00) 00000-0000"/>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="senha-func">Nova senha <span class="opt">Opcional</span></label>
+                                <input class="field-input" id="senha-func" name="senha" type="password"
+                                       placeholder="Deixe em branco para manter"/>
+                            </div>
+                            <div style="display:flex;justify-content:flex-end">
+                                <button type="submit" class="btn-save"><span>Salvar dados</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Meu endereço</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="endereco-row" th:each="end : ${usuario.enderecos}">
+                            <div>
+                                <div class="endereco-apelido">
+                                    <span th:if="${end.principal}" class="principal-dot"></span>
+                                    <span th:text="${end.apelido != null ? end.apelido : 'Endereço'}">Casa</span>
+                                </div>
+                                <div class="endereco-texto"
+                                     th:text="${end.logradouro + ', ' + end.numero + (end.complemento != null ? ' — ' + end.complemento : '') + ' · ' + end.bairro + ', ' + end.cidade + '/' + end.estado + ' · CEP ' + end.cep}">
+                                </div>
+                            </div>
+                            <form th:action="@{/perfil/enderecos/{id}/deletar(id=${end.id})}" method="post">
+                                <button type="submit" class="btn-rm-endereco"
+                                        onclick="return confirm('Remover endereço?')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div th:if="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)}"
+                             class="empty-pedidos">
+                            <div class="empty-pedidos-text">Nenhum endereço cadastrado</div>
+                        </div>
+
+                        <button class="accordion-toggle" onclick="toggleEndereco(this)">
+                            <i class="fa-solid fa-plus"></i> Adicionar endereço
+                        </button>
+                        <div class="accordion-content">
+                            <form th:action="@{/perfil/enderecos}" method="post">
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="apelido-f">Apelido <span class="opt">Opcional</span></label>
+                                        <input class="field-input" id="apelido-f" name="apelido" type="text" placeholder="Casa, Trabalho…"/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="cep-f">CEP <span class="req">*</span></label>
+                                        <input class="field-input" id="cep-f" name="cep" type="text" placeholder="00000-000" required/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="log-f">Logradouro <span class="req">*</span></label>
+                                        <input class="field-input" id="log-f" name="logradouro" type="text" placeholder="Rua, Av…" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="num-f">Número <span class="req">*</span></label>
+                                        <input class="field-input" id="num-f" name="numero" type="text" placeholder="123" required/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="bairro-f">Bairro <span class="req">*</span></label>
+                                        <input class="field-input" id="bairro-f" name="bairro" type="text" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="comp-f">Complemento <span class="opt">Opcional</span></label>
+                                        <input class="field-input" id="comp-f" name="complemento" type="text" placeholder="Apto, Bloco…"/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:16px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="cidade-f">Cidade <span class="req">*</span></label>
+                                        <input class="field-input" id="cidade-f" name="cidade" type="text" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="estado-f">Estado <span class="req">*</span></label>
+                                        <input class="field-input" id="estado-f" name="estado" type="text" placeholder="SP" maxlength="2" required/>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:flex-end">
+                                    <button type="submit" class="btn-save"><span>Salvar endereço</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Painel</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="admin-shortcut">
+                            <a th:href="@{/painel/produtos}" class="shortcut-link">
+                                <i class="fa-solid fa-box"></i> Gerenciar produtos
+                            </a>
+                            <a th:href="@{/painel/pedidos}" class="shortcut-link">
+                                <i class="fa-solid fa-receipt"></i> Ver pedidos
+                            </a>
+                            <a th:href="@{/painel/categorias}" class="shortcut-link">
+                                <i class="fa-solid fa-tags"></i> Categorias
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${usuario.tipo.name() == 'COMUM'}">
+        <div class="perfil-grid">
+
+            <div>
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Dados pessoais</span>
+                    </div>
+                    <div class="form-card-body">
+                        <form th:action="@{/perfil/dados}" method="post">
+                            <div class="field-row" style="margin-bottom:16px">
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="nome-c">Nome <span class="req">*</span></label>
+                                    <input class="field-input" id="nome-c" name="nome" type="text"
+                                           th:value="${usuario.nome}" required/>
+                                </div>
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="email-c">E-mail <span class="req">*</span></label>
+                                    <input class="field-input" id="email-c" name="email" type="email"
+                                           th:value="${usuario.email}" required/>
+                                </div>
+                            </div>
+                            <div class="field-row" style="margin-bottom:16px">
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="cpf-c">CPF <span class="opt">Opcional</span></label>
+                                    <input class="field-input" id="cpf-c" name="cpf" type="text"
+                                           th:value="${usuario.cpf}" placeholder="000.000.000-00"/>
+                                </div>
+                                <div class="field-group" style="margin-bottom:0">
+                                    <label class="field-label" for="tel-c">Telefone <span class="opt">Opcional</span></label>
+                                    <input class="field-input" id="tel-c" name="telefone" type="text"
+                                           th:value="${usuario.telefone}" placeholder="(00) 00000-0000"/>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="senha-c">Nova senha <span class="opt">Opcional</span></label>
+                                <input class="field-input" id="senha-c" name="senha" type="password"
+                                       placeholder="Deixe em branco para manter"/>
+                                <p class="field-hint">Mínimo 6 caracteres.</p>
+                            </div>
+                            <div style="display:flex;justify-content:flex-end">
+                                <button type="submit" class="btn-save"><span>Salvar dados</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Meus endereços</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div th:if="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)}"
+                             class="empty-pedidos">
+                            <div class="empty-pedidos-text">Nenhum endereço cadastrado</div>
+                        </div>
+
+                        <div class="endereco-row" th:each="end : ${usuario.enderecos}">
+                            <div>
+                                <div class="endereco-apelido">
+                                    <span th:if="${end.principal}" class="principal-dot"></span>
+                                    <span th:text="${end.apelido != null ? end.apelido : 'Endereço'}">Casa</span>
+                                </div>
+                                <div class="endereco-texto"
+                                     th:text="${end.logradouro + ', ' + end.numero + (end.complemento != null and !end.complemento.isEmpty() ? ' — ' + end.complemento : '') + ' · ' + end.bairro + ', ' + end.cidade + '/' + end.estado + ' · CEP ' + end.cep}">
+                                </div>
+                            </div>
+                            <form th:action="@{/perfil/enderecos/{id}/deletar(id=${end.id})}" method="post">
+                                <button type="submit" class="btn-rm-endereco"
+                                        onclick="return confirm('Remover endereço?')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Adicionar endereço -->
+                        <button class="accordion-toggle" onclick="toggleEndereco(this)">
+                            <i class="fa-solid fa-plus"></i> Adicionar novo endereço
+                        </button>
+                        <div class="accordion-content">
+                            <form th:action="@{/perfil/enderecos}" method="post">
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="apelido">Apelido <span class="opt">Opcional</span></label>
+                                        <input class="field-input" id="apelido" name="apelido" type="text" placeholder="Casa, Trabalho…"/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="cep">CEP <span class="req">*</span></label>
+                                        <input class="field-input" id="cep" name="cep" type="text" placeholder="00000-000" required/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="logradouro">Logradouro <span class="req">*</span></label>
+                                        <input class="field-input" id="logradouro" name="logradouro" type="text" placeholder="Rua, Av…" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="numero">Número <span class="req">*</span></label>
+                                        <input class="field-input" id="numero" name="numero" type="text" placeholder="123" required/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:14px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="bairro">Bairro <span class="req">*</span></label>
+                                        <input class="field-input" id="bairro" name="bairro" type="text" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="complemento">Complemento <span class="opt">Opcional</span></label>
+                                        <input class="field-input" id="complemento" name="complemento" type="text" placeholder="Apto, Bloco…"/>
+                                    </div>
+                                </div>
+                                <div class="field-row" style="margin-bottom:16px">
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="cidade">Cidade <span class="req">*</span></label>
+                                        <input class="field-input" id="cidade" name="cidade" type="text" required/>
+                                    </div>
+                                    <div class="field-group" style="margin-bottom:0">
+                                        <label class="field-label" for="estado">Estado <span class="req">*</span></label>
+                                        <input class="field-input" id="estado" name="estado" type="text" placeholder="SP" maxlength="2" required/>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:flex-end">
+                                    <button type="submit" class="btn-save"><span>Salvar endereço</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-card" style="position:sticky;top:80px">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Meus pedidos</span>
+                        <span style="font-size:11px;color:var(--muted);font-family:var(--font-cond);letter-spacing:.1em"
+                              th:text="${#lists.isEmpty(pedidos) ? '' : pedidos.size() + ' pedido' + (pedidos.size() != 1 ? 's' : '')}"></span>
+                    </div>
+                    <div class="form-card-body" style="max-height:500px;overflow-y:auto">
+
+                        <div th:if="${pedidos == null or #lists.isEmpty(pedidos)}" class="empty-pedidos">
+                            <div class="empty-pedidos-text">Você ainda não fez pedidos</div>
+                        </div>
+
+                        <div class="pedidos-lista">
+                            <div th:each="ped : ${pedidos}" class="pedido-row">
+                                <div class="pedido-row-top">
+                                    <span class="pedido-row-id" th:text="'Pedido #' + ${ped.id}">—</span>
+                                    <span class="pedido-row-status"
+                                          th:classappend="'s-' + ${ped.status.name()}"
+                                          th:text="${ped.status.name().replace('_', ' ')}">—</span>
+                                </div>
+                                <div class="pedido-row-itens">
+                                    <span th:each="item, s : ${ped.itens}"
+                                          th:text="${item.quantidade + 'x ' + item.variante.produto.nome + (!s.last ? ' · ' : '')}"></span>
+                                </div>
+                                <div class="pedido-row-valor"
+                                     th:text="'R$ ' + ${#numbers.formatDecimal(ped.total, 1, 'POINT', 2, 'COMMA')}">—</div>
+                                <div class="pedido-row-data"
+                                     th:text="${#temporals.format(ped.criadoEm, 'dd/MM/yyyy')}"
+                                     style="font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--font-cond)"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script>
+    function toggleEndereco(btn) {
+        const content = btn.nextElementSibling;
+        content.classList.toggle('open');
+        btn.querySelector('i').className = content.classList.contains('open')
+            ? 'fa-solid fa-minus'
+            : 'fa-solid fa-plus';
+    }
+</script>
+</body>
+</html>

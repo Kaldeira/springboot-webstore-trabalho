@@ -1,50 +1,135 @@
 USE webstore;
 
-INSERT INTO categorias (nome, descricao) VALUES
-  ('Camisetas',  'Camisetas masculinas e femininas'),
-  ('Calças',     'Calças jeans, jogger e legging'),
-  ('Tênis',      'Tênis casuais e esportivos'),
-  ('Moletons',   'Moletons e hoodies');
+INSERT INTO categorias (nome, descricao, colecao) VALUES
+  ('Camisetas',  'Camisetas masculinas e femininas da coleção Divino', 'Divino'),
+  ('Camisetas',  'Camisetas masculinas e femininas da coleção Alucard', 'Alucard'),
+  ('Camisetas',  'Camisetas masculinas e femininas da coleção Morte', 'Morte'),
+  ('Calças',     'Calças jeans, jogger e legging da coleção Divino', 'Divino'),
+  ('Calças',     'Calças jeans, jogger e legging da coleção Alucard', 'Alucard'),
+  ('Calças',     'Calças jeans, jogger e legging da coleção Morte', 'Morte'),
+  ('Shorts',     'Shorts da coleção Alucard', 'Alucard'),
+  ('Shorts',     'Shorts da coleção Morte', 'Morte'),
+  ('Shorts',     'Shorts da coleção Divino', 'Divino'),
+  ('Moletons',   'Moletons e hoodies da coleção Alucard', 'Alucard'),
+  ('Moletons',   'Moletons e hoodies da coleção Divino', 'Divino'),
+  ('Moletons',   'Moletons e hoodies da coleção Morte', 'Morte');
+
 
 INSERT INTO produtos (categoria_id, nome, descricao, preco) VALUES
-  (1, 'Camiseta Básica Branca',   'Algodão 100%, corte regular.',          49.90),
-  (1, 'Camiseta Oversized Preta', 'Fit oversized, algodão premium.',        79.90),
-  (2, 'Calça Jeans Slim',         'Jeans stretch, corte slim.',            159.90),
-  (2, 'Calça Jogger Cinza',       'Moletom leve, elástico na cintura.',    119.90),
-  (3, 'Tênis Air Casual Branco',  'Solado EVA, cabedal em mesh.',          299.90),
-  (3, 'Tênis Running Pro',        'Amortecimento reativo, corrida.',       449.90),
-  (4, 'Moletom Canguru Azul',     'Fleece interno macio, capuz duplo.',   189.90);
+  -- CAMISETAS
+  (1, 'Camiseta Divino Gold',        'Estampa premium dourada, algodão fio 30.',         89.90),
+  (2, 'Camiseta Alucard Blood',      'Modelagem streetwear com estampa dark.',            99.90),
+  (3, 'Camiseta Morte Skull',        'Camiseta preta com arte caveira exclusiva.',        94.90),
+
+  -- CALÇAS
+  (4, 'Calça Divino Jogger White',   'Jogger confortável com ajuste slim.',              149.90),
+  (5, 'Calça Alucard Cargo Black',   'Calça cargo oversized estilo urbano.',             189.90),
+  (6, 'Calça Morte Destroyed',       'Jeans destroyed com lavagem escura.',              179.90),
+
+  -- SHORTS
+  (7, 'Shorts Alucard Shadow',       'Shorts esportivo leve com bolso lateral.',          89.90),
+  (8, 'Shorts Morte Dark Flame',     'Shorts preto estampado coleção Morte.',             94.90),
+  (9, 'Shorts Divino Heaven',        'Shorts casual azul claro premium.',                 84.90),
+
+  -- MOLETONS
+  (10, 'Moletom Alucard Red Moon',   'Moletom fechado com capuz e fleece interno.',      229.90),
+  (11, 'Moletom Divino Angel',       'Hoodie branco coleção Divino.',                     239.90),
+  (12, 'Moletom Morte Raven',        'Moletom oversized preto coleção Morte.',           249.90);
+
 
 INSERT INTO variantes (produto_id, tamanho, cor, estoque) VALUES
-  -- Camiseta Básica Branca
-  (1, 'P',  'Branco', 30), (1, 'M',  'Branco', 50), (1, 'G',  'Branco', 40), (1, 'GG', 'Branco', 20),
-  -- Camiseta Oversized Preta
-  (2, 'P',  'Preto',  15), (2, 'M',  'Preto',  30), (2, 'G',  'Preto',  25),
-  -- Calça Jeans Slim
-  (3, '38', 'Azul',   10), (3, '40', 'Azul',   15), (3, '42', 'Azul',   12), (3, '44', 'Azul',   8),
-  -- Calça Jogger Cinza
-  (4, 'P',  'Cinza',  20), (4, 'M',  'Cinza',  30), (4, 'G',  'Cinza',  20),
-  -- Tênis Air Casual Branco
-  (5, '38', 'Branco', 8), (5, '39', 'Branco', 10), (5, '40', 'Branco', 12),
-  (5, '41', 'Branco', 10), (5, '42', 'Branco', 7),
-  -- Tênis Running Pro
-  (6, '39', 'Preto',  5), (6, '40', 'Preto',  8), (6, '41', 'Preto', 10), (6, '42', 'Preto', 6),
-  -- Moletom Canguru Azul
-  (7, 'P',  'Azul',  10), (7, 'M',  'Azul',  18), (7, 'G',  'Azul',  14), (7, 'GG', 'Azul',  8);
+
+  -- Camiseta Divino Gold
+  (1,  'P',  'Branco', 20),
+  (1,  'M',  'Branco', 35),
+  (1,  'G',  'Branco', 30),
+  (1,  'GG', 'Branco', 15),
+
+  -- Camiseta Alucard Blood
+  (2,  'P',  'Preto', 18),
+  (2,  'M',  'Preto', 25),
+  (2,  'G',  'Preto', 22),
+  (2,  'GG', 'Preto', 10),
+
+  -- Camiseta Morte Skull
+  (3, 'P',  'Preto', 12),
+  (3, 'M',  'Preto', 20),
+  (3, 'G',  'Preto', 18),
+  (3, 'GG', 'Preto', 8),
+
+  -- Calça Divino Jogger White
+  (4, '38', 'Branco', 10),
+  (4, '40', 'Branco', 15),
+  (4, '42', 'Branco', 12),
+  (4, '44', 'Branco', 8),
+
+  -- Calça Alucard Cargo Black
+  (5, '38', 'Preto', 8),
+  (5, '40', 'Preto', 12),
+  (5, '42', 'Preto', 10),
+  (5, '44', 'Preto', 6),
+
+  -- Calça Morte Destroyed
+  (6, '38', 'Grafite', 7),
+  (6, '40', 'Grafite', 11),
+  (6, '42', 'Grafite', 9),
+  (6, '44', 'Grafite', 5),
+
+  -- Shorts Alucard Shadow
+  (7, 'P',  'Preto', 14),
+  (7, 'M',  'Preto', 20),
+  (7, 'G',  'Preto', 18),
+
+  -- Shorts Morte Dark Flame
+  (8, 'P',  'Preto', 12),
+  (8, 'M',  'Preto', 18),
+  (8, 'G',  'Preto', 15),
+
+  -- Shorts Divino Heaven
+  (9, 'P',  'Azul', 16),
+  (9, 'M',  'Azul', 22),
+  (9, 'G',  'Azul', 18),
+
+  -- Moletom Alucard Red Moon
+  (10, 'P',  'Vermelho', 8),
+  (10, 'M',  'Vermelho', 14),
+  (10, 'G',  'Vermelho', 12),
+  (10, 'GG', 'Vermelho', 6),
+
+  -- Moletom Divino Angel
+  (11, 'P',  'Branco', 10),
+  (11, 'M',  'Branco', 16),
+  (11, 'G',  'Branco', 14),
+  (11, 'GG', 'Branco', 7),
+
+  -- Moletom Morte Raven
+  (12, 'P',  'Preto', 9),
+  (12, 'M',  'Preto', 15),
+  (12, 'G',  'Preto', 13),
+  (12, 'GG', 'Preto', 6);
+
 
 INSERT INTO imagens_produto (produto_id, url, principal) VALUES
-  (1, '/images/camiseta-basica-branca-1.jpg', TRUE),
-  (2, '/images/camiseta-oversized-preta-1.jpg', TRUE),
-  (3, '/images/calca-jeans-slim-1.jpg', TRUE),
-  (4, '/images/calca-jogger-cinza-1.jpg', TRUE),
-  (5, '/images/tenis-air-casual-1.jpg', TRUE),
-  (6, '/images/tenis-running-pro-1.jpg', TRUE),
-  (7, '/images/moletom-canguru-azul-1.jpg', TRUE);
+  (1,  '/uploads/camiseta-divino-gold.png', TRUE),
+  (2,  '/uploads/camiseta-alucard-blood.png', TRUE),
+  (3, '/uploads/camiseta-morte-skull.png', TRUE),
+
+  (4, '/uploads/calca-divino-jogger-white.png', TRUE),
+  (5, '/uploads/calca-alucard-cargo-black.png', TRUE),
+  (6, '/uploads/calca-morte-destroyed.png', TRUE),
+
+  (7, '/uploads/shorts-alucard-shadow.png', TRUE),
+  (8, '/uploads/shorts-morte-dark-flame.png', TRUE),
+  (9, '/uploads/shorts-divino-heaven.png', TRUE),
+
+  (10, '/uploads/moletom-alucard-red-moon.png', TRUE),
+  (11, '/uploads/moletom-divino-angel.png', TRUE),
+  (12, '/uploads/moletom-morte-raven.png', TRUE);
 
 INSERT INTO usuarios (nome, email, senha_hash, cpf, telefone, tipo) VALUES
   ('Ana Lima',    'ana@email.com',    '1234', '111.111.111-11', '(11) 91111-1111', 1),
-  ('Carlos Souza','carlos@email.com', '1234', '222.222.222-22', '(21) 92222-2222', 1),
-  ('Admin','admin@email.com', 'admin', '233.222.223-22', '(21) 92322-2322', 0);
+  ('Carlos Souza','funcionario', '123', '222.222.222-22', '(21) 92222-2222', 2),
+  ('Admin','admin', 'admin', '233.222.223-22', '(21) 92322-2322', 0);
 
 INSERT INTO enderecos (usuario_id, apelido, logradouro, numero, bairro, cidade, estado, cep, principal) VALUES
   (1, 'Casa',     'Rua das Flores',   '123', 'Centro',       'São Paulo',   'SP', '01310-100', TRUE),

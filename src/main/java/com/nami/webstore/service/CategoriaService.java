@@ -7,13 +7,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 public class CategoriaService {
+
     @Autowired
     private CategoriaRepository categoriaRepo;
 
     public List<Categorias> listarTodas() {
         return categoriaRepo.findAll();
+    }
+
+    public List<Categorias> listarTodasComProdutos() {
+        List<Categorias> categorias = categoriaRepo.findAll();
+        for (Categorias cat : categorias) {
+            cat.setProdutos(categoriaRepo.findProdutosByCategoriaId(cat.getId()));
+        }
+        return categorias;
     }
 }

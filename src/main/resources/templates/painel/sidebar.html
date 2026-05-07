@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<div th:fragment="painel_sidebar">
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<aside class="sidebar">
+    <div class="sidebar-section">
+        <div class="sidebar-label">Catálogo</div>
+        <a th:href="@{/panelProdutos}" class="sidebar-link"  th:classappend="${paginaAtiva == 'addProdutos'} ? 'active'">
+            <span class="icon">＋</span> Novo produto
+        </a>
+        <a th:href="@{/painel/produtos}" class="sidebar-link" th:classappend="${paginaAtiva == 'listarProdutos'} ? 'active'">
+            <span class="icon">▤</span> Todos os produtos
+        </a>
+        <a th:href="@{/painel/categorias}" class="sidebar-link" th:classappend="${paginaAtiva == 'categorias'} ? 'active'">
+            <span class="icon">◈</span> Categorias
+        </a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-label">Vendas</div>
+        <a th:href="@{/painel/pedidos}" class="sidebar-link" th:classappend="${paginaAtiva == 'pedidos'} ? 'active'">
+            <span class="icon">◉</span> Pedidos
+        </a>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-label">Gestão</div>
+        <a th:href="@{/painel/usuarios}" class="sidebar-link" th:classappend="${paginaAtiva == 'listarUsuarios'} ? 'active'">
+            <span class="icon">◎</span> Usuários
+        </a>
+    </div>
+</aside>
+
+</div>
+</body>
+</html>

@@ -5,6 +5,7 @@ USE webstore;
 CREATE TABLE categorias ( -- categorias (roupas, tênis, acessórios, etc.)
     id         INT AUTO_INCREMENT PRIMARY KEY,
     nome       VARCHAR(100) NOT NULL,
+    colecao    VARCHAR(100) NOT NULL,
     descricao  TEXT,
     criado_em  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

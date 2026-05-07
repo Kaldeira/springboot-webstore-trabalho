@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Pedidos</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/pedidos.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="painel/navbar :: painel_navbar"></div>
+
+<div class="page-wrap">
+
+    <div th:replace="painel/sidebar :: painel_sidebar"></div>
+
+    <main class="content">
+
+        <div class="page-header">
+            <p class="page-tag">— Vendas / Pedidos</p>
+            <h1 class="page-title">Pedidos</h1>
+            <p class="page-desc">Acompanhe e gerencie todos os pedidos da loja.</p>
+        </div>
+
+        <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+        <div class="flash error" th:if="${flashErro}" th:text="${flashErro}"></div>
+
+        <div class="list-toolbar">
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" id="search-input"
+                       placeholder="Buscar por cliente…" oninput="filtrar()"/>
+            </div>
+            <select class="filter-select" id="filter-status" onchange="filtrar()">
+                <option value="">Todos os status</option>
+                <option value="AGUARDANDO_PAGAMENTO">Aguardando pagamento</option>
+                <option value="PAGO">Pago</option>
+                <option value="EM_SEPARACAO">Em separação</option>
+                <option value="ENVIADO">Enviado</option>
+                <option value="ENTREGUE">Entregue</option>
+                <option value="CANCELADO">Cancelado</option>
+            </select>
+            <span class="count-label" id="count-label"></span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(pedidos)}" class="empty-state">
+            <div class="empty-state-icon"><i class="fa-solid fa-receipt"></i></div>
+            <div class="empty-state-text">Nenhum pedido registrado ainda</div>
+        </div>
+
+        <table class="pedidos-table" th:unless="${#lists.isEmpty(pedidos)}">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Endereço</th>
+                <th>Itens</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Data</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${pedidos}"
+                th:data-cliente="${p.cliente.nome}"
+                th:data-status="${p.status.name()}">
+
+                <td>
+                    <div class="pedido-id" th:text="'#' + ${p.id}">—</div>
+                    <div th:if="${p.codigoRastreio}" class="pedido-cliente-email"
+                         th:text="'Rastreio: ' + ${p.codigoRastreio}"></div>
+                </td>
+
+                <td>
+                    <div class="pedido-cliente-nome" th:text="${p.cliente.nome}">—</div>
+                    <div class="pedido-cliente-email" th:text="${p.cliente.email}">—</div>
+                </td>
+
+                <td>
+                    <div class="pedido-endereco"
+                         th:text="${p.endereco.logradouro + ', ' + p.endereco.numero + ' — ' + p.endereco.bairro + ', ' + p.endereco.cidade + '/' + p.endereco.estado}">
+                        —
+                    </div>
+                    <div class="pedido-cliente-email" th:text="'CEP ' + ${p.endereco.cep}"></div>
+                </td>
+
+                <td>
+                    <div class="itens-list">
+                            <span th:each="item, s : ${p.itens}"
+                                  th:text="${item.quantidade} + 'x ' + ${item.variante.produto.nome} + ' (' + ${item.variante.tamanho} + '/' + ${item.variante.cor} + ')'
+                                            + (!s.last ? ' · ' : '')"></span>
+                        <span th:if="${p.itens == null or #lists.isEmpty(p.itens)}" style="color:var(--muted)">—</span>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="pedido-valor"
+                         th:text="'R$ ' + ${#numbers.formatDecimal(p.total, 1, 'POINT', 2, 'COMMA')}">—
+                    </div>
+                    <div class="pedido-frete"
+                         th:text="'Frete: R$ ' + ${#numbers.formatDecimal(p.frete, 1, 'POINT', 2, 'COMMA')}"></div>
+                </td>
+
+                <td>
+                    <form th:action="@{/painel/pedidos/{id}/status(id=${p.id})}" method="post">
+                        <div class="status-wrap">
+                              <span class="status-badge"
+                                    th:classappend="'status-' + ${p.status.name()}">
+                                      <select class="status-select"
+                                              name="status"
+                                              onchange="marcarAlterado(this)">
+                                          <option th:each="s : ${T(com.nami.webstore.enums.StatusPedido).values()}"
+                                                  th:value="${s.name()}"
+                                                  th:text="${s.name().replace('_',' ')}"
+                                                  th:selected="${s.name() == p.status.name()}">
+
+                                          </option>
+                                      </select>
+                              </span>
+                            <button type="submit" class="btn-status-save" th:id="'btn-' + ${p.id}">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
+                    </form>
+                </td>
+
+                <td>
+                    <div class="pedido-data"
+                         th:text="${#temporals.format(p.criadoEm, 'dd/MM/yyyy')}">—
+                    </div>
+                    <div class="pedido-cliente-email"
+                         th:text="${#temporals.format(p.criadoEm, 'HH:mm')}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </main>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script>
+    function marcarAlterado(select) {
+        const row = select.closest('tr');
+        // mostra botão salvar
+        const form = select.closest('form');
+        form.querySelector('.btn-status-save').classList.add('visible');
+    }
+
+    function filtrar() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const status = document.getElementById('filter-status').value;
+        const rows = document.querySelectorAll('.pedidos-table tbody tr');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const nome = (row.dataset.cliente || '').toLowerCase();
+            const st = row.dataset.status || '';
+            const okS = !search || nome.includes(search);
+            const okSt = !status || st === status;
+
+            if (okS && okSt) {
+                row.style.display = '';
+                visible++;
+            } else row.style.display = 'none';
+        });
+
+        const label = document.getElementById('count-label');
+        if (label) label.textContent = visible + ' pedido' + (visible !== 1 ? 's' : '');
+    }
+
+    filtrar();
+</script>
+</body>
+</html>

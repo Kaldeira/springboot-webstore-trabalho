@@ -1,0 +1,140 @@
+@import "../global.css";
+.cat-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 28px;
+    align-items: start;
+}
+
+.cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.cat-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    transition: background .15s;
+}
+
+.cat-row:last-child {
+    border-bottom: 1px solid var(--border);
+}
+
+.cat-row:hover {
+    background: rgba(255, 255, 255, .02);
+}
+
+.cat-row-info {
+}
+
+.cat-row-nome {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 3px;
+}
+
+.cat-row-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.cat-row-count {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.cat-row-count span {
+    color: var(--accent);
+    font-size: 18px;
+    font-family: var(--font-display);
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.cat-row-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit-cat {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    cursor: none;
+    transition: border-color .2s, color .2s;
+}
+
+.btn-edit-cat:hover {
+    border-color: rgba(255, 255, 255, .2);
+    color: var(--text);
+}
+
+.btn-delete-cat {
+    width: 34px;
+    height: 34px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: none;
+    display: grid;
+    place-items: center;
+    transition: border-color .2s, color .2s;
+}
+
+.btn-delete-cat:hover {
+    border-color: rgba(255, 60, 46, .4);
+    color: var(--accent2);
+}
+
+.empty-cats {
+    padding: 60px 24px;
+    text-align: center;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+}
+
+.empty-cats-text {
+    font-family: var(--font-cond);
+    font-size: 13px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cat-form-sticky {
+    position: sticky;
+    top: 112px;
+}
+
+.cat-date {
+    font-size: 11px;
+    color: rgba(107, 103, 96, .5);
+    font-family: var(--font-cond);
+    letter-spacing: .06em;
+    margin-top: 4px;
+}

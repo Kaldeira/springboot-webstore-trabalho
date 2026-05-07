@@ -1,7 +1,9 @@
 package com.nami.webstore.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,27 +16,60 @@ public class Categorias {
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @Column(nullable = false, length = 100)
+    private String colecao;
+
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
     @Column(name = "criado_em", updatable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "categoriaId")
-    private List<Produtos> produtos;
+    @Transient
+    private List<Produtos> produtos = new ArrayList<>();
 
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getNome() {
+        return nome;
+    }
 
-    public LocalDateTime getCriadoEm() { return criadoEm; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public List<Produtos> getProdutos() { return produtos; }
-    public void setProdutos(List<Produtos> produtos) { this.produtos = produtos; }
+    public String getColecao() {
+        return colecao;
+    }
+
+    public void setColecao(String colecao) {
+        this.colecao = colecao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public List<Produtos> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produtos> produtos) {
+        this.produtos = produtos;
+    }
 }

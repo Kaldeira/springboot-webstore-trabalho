@@ -1,15 +1,12 @@
 package com.nami.webstore.controller;
 
 import com.nami.webstore.exception.ServerExc;
-import com.nami.webstore.repository.UsuarioRepository;
 import com.nami.webstore.service.UsuarioService;
 import com.nami.webstore.model.Usuario;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,28 +18,20 @@ import java.security.NoSuchAlgorithmException;
 public class UsuariosController {
 
     @Autowired
-    private UsuarioRepository userRepo;
-
-    @Autowired
     private UsuarioService userService;
 
     @PostMapping("/login")
-    public ModelAndView login(@Valid Usuario usuario, BindingResult br,
+    public ModelAndView login(Usuario usuario, BindingResult br,
                               HttpSession session) throws NoSuchAlgorithmException, ServerExc {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("usuario", new Usuario());
 
-        if(br.hasErrors()) {
-            return new ModelAndView("redirect:/login?error");
-        }
-
         Usuario userLogin = userService.loginUser(usuario.getEmail(), usuario.getSenhaHash());
 
-        if(userLogin == null) {
-                return new ModelAndView("redirect:/login?error");
+        if (userLogin == null) {
+            return new ModelAndView("redirect:/login?error");
         }
-
 
         session.setAttribute("usuarioLogado", userLogin);
         return new ModelAndView("redirect:/");

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Usuários</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/usuarios.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div class="modal-overlay" id="modal-usuario">
+    <div class="modal-box">
+        <div class="modal-title" id="modal-u-titulo">Novo usuário</div>
+        <form id="form-usuario" method="post">
+
+            <div class="field-row" style="margin-bottom:16px">
+                <div class="field-group" style="margin-bottom:0">
+                    <label class="field-label" for="mu-nome">Nome <span class="req">*</span></label>
+                    <input class="field-input" id="mu-nome" name="nome" type="text" placeholder="Nome completo" required/>
+                </div>
+                <div class="field-group" style="margin-bottom:0">
+                    <label class="field-label" for="mu-tipo">Tipo <span class="req">*</span></label>
+                    <select class="field-select" id="mu-tipo" name="tipo" required>
+                        <option value="COMUM">Comum</option>
+                        <option value="FUNCIONARIO">Funcionário</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="mu-email">E-mail <span class="req">*</span></label>
+                <input class="field-input" id="mu-email" name="email" type="email" placeholder="email@exemplo.com" required/>
+            </div>
+
+            <div class="field-row" style="margin-bottom:16px">
+                <div class="field-group" style="margin-bottom:0">
+                    <label class="field-label" for="mu-cpf">CPF</label>
+                    <input class="field-input" id="mu-cpf" name="cpf" type="text" placeholder="000.000.000-00"/>
+                </div>
+                <div class="field-group" style="margin-bottom:0">
+                    <label class="field-label" for="mu-telefone">Telefone</label>
+                    <input class="field-input" id="mu-telefone" name="telefone" type="text" placeholder="(00) 00000-0000"/>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="mu-senha">
+                    Senha <span id="senha-hint" class="opt">Deixe em branco para manter</span>
+                </label>
+                <input class="field-input" id="mu-senha" name="senha" type="password"
+                       placeholder="Nova senha (mínimo 6 caracteres)"/>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" onclick="closeModalUsuario()">Cancelar</button>
+                <button type="submit" class="btn-modal-save" id="btn-modal-save-text">Criar usuário</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-delete">
+    <div class="modal-box" style="max-width:420px">
+        <div class="modal-title">Deletar usuário</div>
+        <p class="confirm-text">Tem certeza que deseja deletar <strong id="del-nome"></strong>?<br>Esta ação não pode ser desfeita.</p>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModalDelete()">Cancelar</button>
+            <form id="form-delete" method="post">
+                <button type="submit" class="btn-modal-delete"><i class="fa-solid fa-trash-can"></i> Deletar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="painel/navbar :: painel_navbar"></div>
+
+<div class="page-wrap">
+
+    <div th:replace="painel/sidebar :: painel_sidebar"></div>
+
+    <main class="content">
+
+        <div class="page-header">
+            <p class="page-tag">— Gestão / Usuários</p>
+            <h1 class="page-title">Usuários</h1>
+            <p class="page-desc">Gerencie clientes, funcionários e administradores do sistema.</p>
+        </div>
+
+        <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+        <div class="flash error"   th:if="${flashErro}"    th:text="${flashErro}"></div>
+
+        <div class="list-toolbar">
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" id="search-input"
+                       placeholder="Buscar por nome ou e-mail…" oninput="filtrar()"/>
+            </div>
+            <select class="filter-select" id="filter-tipo" onchange="filtrar()">
+                <option value="">Todos os tipos</option>
+                <option value="ADMIN">Admin</option>
+                <option value="FUNCIONARIO">Funcionário</option>
+                <option value="COMUM">Comum</option>
+            </select>
+            <span class="count-label" id="count-label"></span>
+            <button class="btn-novo-usuario" onclick="openModalNovo()">
+                <i class="fa-solid fa-plus"></i> Novo usuário
+            </button>
+        </div>
+
+        <table class="usuarios-table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Usuário</th>
+                <th>CPF / Telefone</th>
+                <th>Tipo</th>
+                <th>Cadastrado em</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}"
+                th:data-nome="${u.nome}"
+                th:data-email="${u.email}"
+                th:data-tipo="${u.tipo.name()}">
+
+                <td style="width:52px">
+                    <div class="u-avatar" th:text="${#strings.substring(u.nome, 0, 1).toUpperCase()}">?</div>
+                </td>
+
+                <td>
+                    <div class="u-nome" th:text="${u.nome}">—</div>
+                    <div class="u-email" th:text="${u.email}">—</div>
+                </td>
+
+                <td>
+                    <div class="u-cpf" th:text="${u.cpf != null ? u.cpf : '—'}">—</div>
+                    <div class="u-tel" th:text="${u.telefone != null ? u.telefone : ''}"></div>
+                </td>
+
+                <td>
+                        <span class="tipo-badge" th:classappend="'tipo-' + ${u.tipo.name()}"
+                              th:text="${u.tipo.name()}">—</span>
+                </td>
+
+                <td>
+                    <div class="u-data" th:text="${#temporals.format(u.criadoEm, 'dd/MM/yyyy')}">—</div>
+                </td>
+
+                <td>
+                    <div class="u-actions">
+                        <button class="btn-edit-u"
+                                th:data-id="${u.id}"
+                                th:data-nome="${u.nome}"
+                                th:data-email="${u.email}"
+                                th:data-cpf="${u.cpf}"
+                                th:data-telefone="${u.telefone}"
+                                th:data-tipo="${u.tipo.name()}"
+                                onclick="openModalEditarFromElement(this)">
+                            <i class="fa-regular fa-pen-to-square"></i> Editar
+                        </button>
+                        <form th:action="@{/painel/usuarios/{id}/deletar(id=${u.id})}" method="post"
+                              th:if="${u.tipo.name() != 'ADMIN' or u.id != session.usuarioLogado.id}">
+                            <button type="button" class="btn-del-u"
+                                    th:data-id="${u.id}"
+                                    th:data-nome="${u.nome}"
+                                    onclick="openModalDeleteFromElement(this)">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </main>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script>
+    function filtrar() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const tipo   = document.getElementById('filter-tipo').value;
+        const rows   = document.querySelectorAll('.usuarios-table tbody tr');
+        let visible  = 0;
+
+        rows.forEach(row => {
+            const nome  = (row.dataset.nome  || '').toLowerCase();
+            const email = (row.dataset.email || '').toLowerCase();
+            const tp    = row.dataset.tipo || '';
+            const okS   = !search || nome.includes(search) || email.includes(search);
+            const okT   = !tipo   || tp === tipo;
+
+            if (okS && okT) { row.style.display = ''; visible++; }
+            else row.style.display = 'none';
+        });
+
+        const label = document.getElementById('count-label');
+        if (label) label.textContent = visible + ' usuário' + (visible !== 1 ? 's' : '');
+    }
+
+    function openModalNovo() {
+        document.getElementById('modal-u-titulo').textContent = 'Novo usuário';
+        document.getElementById('form-usuario').action = '/painel/usuarios';
+        document.getElementById('mu-nome').value = '';
+        document.getElementById('mu-email').value = '';
+        document.getElementById('mu-cpf').value = '';
+        document.getElementById('mu-telefone').value = '';
+        document.getElementById('mu-senha').value = '';
+        document.getElementById('mu-tipo').value = 'COMUM';
+        document.getElementById('btn-modal-save-text').textContent = 'Criar usuário';
+        document.getElementById('senha-hint').textContent = '';
+        document.getElementById('modal-usuario').classList.add('open');
+    }
+
+    function openModalEditar(id, nome, email, cpf, telefone, tipo) {
+        document.getElementById('modal-u-titulo').textContent = 'Editar usuário';
+        document.getElementById('form-usuario').action = '/painel/usuarios/' + id + '/editar';
+        document.getElementById('mu-nome').value = nome;
+        document.getElementById('mu-email').value = email;
+        document.getElementById('mu-cpf').value = cpf;
+        document.getElementById('mu-telefone').value = telefone;
+        document.getElementById('mu-senha').value = '';
+        document.getElementById('mu-tipo').value = tipo;
+        document.getElementById('btn-modal-save-text').textContent = 'Salvar alterações';
+        document.getElementById('senha-hint').textContent = 'Deixe em branco para manter';
+        document.getElementById('modal-usuario').classList.add('open');
+    }
+
+    function closeModalUsuario() {
+        document.getElementById('modal-usuario').classList.remove('open');
+    }
+
+    function openModalDelete(id, nome) {
+        document.getElementById('del-nome').textContent = '"' + nome + '"';
+        document.getElementById('form-delete').action = '/painel/usuarios/' + id + '/deletar';
+        document.getElementById('modal-delete').classList.add('open');
+    }
+
+    function closeModalDelete() {
+        document.getElementById('modal-delete').classList.remove('open');
+    }
+
+    function openModalEditarFromElement(el) {
+        const id       = el.dataset.id;
+        const nome     = el.dataset.nome;
+        const email    = el.dataset.email;
+        const cpf      = el.dataset.cpf || '';
+        const telefone = el.dataset.telefone || '';
+        const tipo     = el.dataset.tipo;
+
+        openModalEditar(id, nome, email, cpf, telefone, tipo);
+    }
+
+
+    function openModalDeleteFromElement(el) {
+        const id = el.dataset.id;
+        const nome = el.dataset.nome;
+
+        openModalDelete(id, nome);
+    }
+
+    document.getElementById('modal-usuario').addEventListener('click', function(e) {
+        if (e.target === this) closeModalUsuario();
+    });
+    document.getElementById('modal-delete').addEventListener('click', function(e) {
+        if (e.target === this) closeModalDelete();
+    });
+
+    filtrar();
+</script>
+</body>
+</html>

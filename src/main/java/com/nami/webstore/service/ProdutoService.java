@@ -70,7 +70,7 @@ public class ProdutoService {
 
         if (imagens != null && !imagens.isEmpty()) {
 
-            String upload_producao = "C:/uploads"; //salvando localmente no pc para testes obviamente
+            String upload_producao = System.getProperty("user.dir") + "/uploads/";//"C:/uploads"; //salvando localmente no pc para testes obviamente
             java.io.File pasta = new java.io.File(upload_producao);
             if (!pasta.exists()) {
                 pasta.mkdirs();

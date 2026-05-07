@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Todos os Produtos</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/produtos.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="painel/navbar :: painel_navbar"></div>
+
+<div class="modal-overlay" id="modal-delete">
+    <div class="modal-box">
+        <div class="modal-title">Deletar produto</div>
+        <p class="modal-text">Tem certeza que deseja deletar <strong id="modal-nome"></strong>?<br>Esta ação não pode ser desfeita.</p>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal()">Cancelar</button>
+            <form id="form-delete" method="post">
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="btn-modal-delete">
+                    <i class="fa-solid fa-trash-can"></i> Deletar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="page-wrap">
+
+    <div th:replace="painel/sidebar :: painel_sidebar"></div>
+
+    <main class="content">
+
+        <div class="page-header">
+            <p class="page-tag">— Catálogo / Produtos</p>
+            <h1 class="page-title">Todos os<br>Produtos</h1>
+            <p class="page-desc">Gerencie o catálogo completo da loja.</p>
+        </div>
+
+        <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+        <div class="flash error"   th:if="${flashErro}"    th:text="${flashErro}"></div>
+
+        <div class="list-toolbar">
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" id="search-input"
+                       placeholder="Buscar produto…" oninput="filtrar()"/>
+            </div>
+            <select class="filter-select" id="filter-cat" onchange="filtrar()">
+                <option value="">Todas as categorias</option>
+                <option th:each="cat : ${categorias}"
+                        th:value="${cat.nome}"
+                        th:text="${cat.nome}"></option>
+            </select>
+            <select class="filter-select" id="filter-status" onchange="filtrar()">
+                <option value="">Todos</option>
+                <option value="ativo">Ativos</option>
+                <option value="inativo">Inativos</option>
+            </select>
+            <span class="produtos-count" id="count-label"></span>
+        </div>
+
+        <div class="produtos-grid" id="produtos-grid">
+
+            <div th:if="${#lists.isEmpty(produtos)}" class="empty-state">
+                <div class="empty-state-icon"><i class="fa-solid fa-box-open"></i></div>
+                <div class="empty-state-text">Nenhum produto cadastrado</div>
+                <a th:href="@{/panelProdutos}" class="btn-save" style="display:inline-block;text-decoration:none;padding:13px 32px">
+                    <span>+ Adicionar produto</span>
+                </a>
+            </div>
+
+            <div th:each="p : ${produtos}"
+                 class="produto-card"
+                 th:data-nome="${p.nome}"
+                 th:data-cat="${catMap[p.categoriaId] != null ? catMap[p.categoriaId] : ''}"
+                 th:data-status="${p.ativo ? 'ativo' : 'inativo'}">
+
+                <div class="produto-card-img">
+                    <img th:if="${imagemMap[p.id] != null}"
+                         th:src="@{${imagemMap[p.id]}}"
+                         th:alt="${p.nome}"/>
+                    <div th:unless="${imagemMap[p.id] != null}" class="no-img"
+                         th:text="${#strings.abbreviate(p.nome, 3).toUpperCase()}">???</div>
+
+                    <span class="produto-status-badge"
+                          th:classappend="${p.ativo} ? 'status-ativo' : 'status-inativo'"
+                          th:text="${p.ativo} ? 'Ativo' : 'Inativo'"></span>
+                </div>
+
+                <div class="produto-card-body">
+                    <div class="produto-card-cat"
+                         th:text="${catMap[p.categoriaId] != null ? catMap[p.categoriaId] : '—'}">Categoria</div>
+                    <div class="produto-card-nome" th:text="${p.nome}">Nome</div>
+                    <div class="produto-card-preco"
+                         th:text="'R$ ' + ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</div>
+
+                    <div class="produto-card-variantes">
+                        <span th:if="${p.variantes == null or #lists.isEmpty(p.variantes)}"
+                              style="font-size:11px;color:var(--muted);font-family:var(--font-cond);letter-spacing:.08em">
+                            Sem variantes
+                        </span>
+                        <span th:each="v : ${p.variantes}" class="var-chip"
+                              th:text="${v.tamanho}"></span>
+<!--                        <p th:text="${imagemMap[p.id]}"></p>-->
+                    </div>
+
+                    <div class="produto-card-actions">
+                        <a th:href="@{/painel/produtos/{id}/editar(id=${p.id})}" class="btn-edit">
+                            <i class="fa-regular fa-pen-to-square"></i> Editar
+                        </a>
+                        <button class="btn-delete"
+                                th:data-id="${p.id}"
+                                th:data-nome="${p.nome}"
+                                onclick="openModalFromButton(this)">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script>
+
+    function filtrar() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const cat    = document.getElementById('filter-cat').value.toLowerCase();
+        const status = document.getElementById('filter-status').value.toLowerCase();
+        const cards  = document.querySelectorAll('.produto-card');
+        let visible  = 0;
+
+        cards.forEach(card => {
+            const nome    = (card.dataset.nome  || '').toLowerCase();
+            const catCard = (card.dataset.cat   || '').toLowerCase();
+            const stCard  = (card.dataset.status|| '').toLowerCase();
+
+            const okSearch = !search || nome.includes(search);
+            const okCat    = !cat    || catCard === cat;
+            const okStatus = !status || stCard  === status;
+
+            if (okSearch && okCat && okStatus) {
+                card.style.display = '';
+                visible++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const label = document.getElementById('count-label');
+        if (label) label.textContent = visible + ' produto' + (visible !== 1 ? 's' : '');
+    }
+
+    function openModal(id, nome) {
+        document.getElementById('modal-nome').textContent = '"' + nome + '"';
+        document.getElementById('form-delete').action = '/painel/produtos/' + id + '/deletar';
+        document.getElementById('modal-delete').classList.add('open');
+    }
+    function closeModal() {
+        document.getElementById('modal-delete').classList.remove('open');
+    }
+
+    // fecha modal ao clicar fora
+    document.getElementById('modal-delete').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    function openModalFromButton(btn) {
+        const id = btn.dataset.id;
+        const nome = btn.dataset.nome;
+
+        document.getElementById('modal-nome').textContent = '"' + nome + '"';
+        document.getElementById('form-delete').action = '/painel/produtos/' + id + '/deletar';
+        document.getElementById('modal-delete').classList.add('open');
+    }
+
+
+    // inicializar contagem
+    filtrar();
+</script>
+</body>
+</html>

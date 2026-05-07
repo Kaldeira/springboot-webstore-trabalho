@@ -26,6 +26,11 @@ nav {
     list-style: none;
 }
 
+.nav-links li {
+    display: flex;
+    align-items: center;
+}
+
 .nav-links a {
     font-family: var(--font-cond);
     font-weight: 500;
@@ -125,4 +130,92 @@ nav {
 
 .login-btn i {
     font-size: 13px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown > a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+}
+
+.dropdown-icon {
+    font-size: 10px;
+    position: relative;
+    top: 1px;
+}
+
+.dropdown:hover .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 0;
+
+    min-width: 240px;
+    padding: 12px 0;
+
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(14px);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    list-style: none;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+
+    transition:
+            opacity .2s ease,
+            transform .2s ease,
+            visibility .2s;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,.45);
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    width: 100%;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+
+    padding: 12px 18px;
+
+    font-family: var(--font-cond);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+
+    color: var(--muted);
+    text-decoration: none;
+
+    transition:
+            background .2s,
+            color .2s;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(255,255,255,.04);
+    color: var(--text);
+}
+
+.dropdown-menu a::after {
+    display: none;
 }

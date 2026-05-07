@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis - Categorias</title>
+
+    <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
+    <link rel="stylesheet" th:href="@{/css/painel/categorias.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="painel/navbar :: painel_navbar"></div>
+
+<div class="page-wrap">
+
+    <div th:replace="painel/sidebar :: painel_sidebar"></div>
+
+    <main class="content">
+
+        <div class="page-header">
+            <p class="page-tag">— Catálogo / Categorias</p>
+            <h1 class="page-title">Categorias</h1>
+            <p class="page-desc">Organize os produtos da loja por categorias e coleções.</p>
+        </div>
+
+        <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+        <div class="flash error" th:if="${flashErro}" th:text="${flashErro}"></div>
+
+        <div class="cat-layout">
+
+            <div>
+                <div class="cat-list">
+
+                    <div th:if="${#lists.isEmpty(categorias)}" class="empty-cats">
+                        <div class="empty-cats-text">Nenhuma categoria cadastrada ainda</div>
+                    </div>
+
+                    <div th:each="cat : ${categorias}" class="cat-row">
+                        <div class="cat-row-info">
+
+                            <div class="cat-row-nome"
+                                 th:text="${cat.nome + ' / ' + cat.colecao}">
+                            </div>
+
+                            <div class="cat-row-desc"
+                                 th:text="${cat.colecao != null and !cat.colecao.isEmpty() ? cat.colecao : 'Sem colecao'}">
+                            </div>
+                            <div class="cat-row-desc"
+                                 th:text="${cat.descricao != null and !cat.descricao.isEmpty() ? cat.descricao : 'Sem descrição'}">
+                            </div>
+                            <div class="cat-date" th:if="${cat.criadoEm != null}"
+                                 th:text="'Criada em ' + ${#temporals.format(cat.criadoEm, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <div class="cat-row-count">
+                            <span th:text="${cat.produtos != null ? #lists.size(cat.produtos) : 0}">
+                            produtos
+                        </div>
+                        <div class="cat-row-actions">
+                            <button class="btn-edit-cat"
+                                    th:attr="data-id=${cat.id},
+                 data-nome=${cat.nome},
+                 data-desc=${cat.descricao},
+                 data-colecao=${cat.colecao}"
+                                    onclick="editarCategoria(this)">
+                                <i class="fa-regular fa-pen-to-square"></i> Editar
+                            </button>
+                            <form th:action="@{/painel/categorias/{id}/deletar(id=${cat.id})}" method="post"
+                                  onsubmit="return confirm('Deletar categoria? Os produtos vinculados ficarão sem categoria.')">
+                                <button type="submit" class="btn-delete-cat">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="cat-form-sticky">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <span class="form-card-title" id="form-card-titulo">Nova categoria</span>
+                    </div>
+                    <div class="form-card-body">
+
+
+                        <form id="form-nova" th:action="@{/painel/categorias}" method="post">
+                            <div class="field-group">
+                                <label class="field-label" for="nome">
+                                    Nome <span class="req">*</span>
+                                </label>
+                                <input class="field-input" id="nome" name="nome"
+                                       type="text" placeholder="Ex: Camisetas, Tênis, Acessórios…"
+                                       maxlength="100" required/>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="colecao">
+                                    Nome da Coleção <span class="req">*</span>
+                                </label>
+                                <input class="field-input" id="colecao" name="colecao"
+                                       type="text" placeholder="Ex: Alucard, Divino…"
+                                       maxlength="100" required/>
+                            </div>
+                            <div class="field-group" style="margin-bottom:20px">
+                                <label class="field-label" for="descricao">
+                                    Descrição <span class="opt">Opcional</span>
+                                </label>
+                                <textarea class="field-textarea" id="descricao" name="descricao"
+                                          placeholder="Breve descrição da coleção ou tipo de produto…"
+                                          style="min-height:80px"></textarea>
+                            </div>
+                            <div style="display:flex;gap:10px">
+                                <button type="submit" class="btn-save" style="flex:1;padding:12px 0">
+                                    <span id="btn-save-text">Criar categoria</span>
+                                </button>
+                                <button type="button" class="btn-cancel" id="btn-cancelar-edicao"
+                                        style="display:none" onclick="cancelarEdicao()">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+
+                <div class="form-card" style="margin-top:0">
+                    <div class="form-card-header">
+                        <span class="form-card-title">Dica</span>
+                    </div>
+                    <div class="form-card-body">
+                        <p class="field-hint" style="line-height:1.8">
+                            Crie categorias como <strong style="color:var(--text)">Coleções</strong> temáticas
+                            (ex: Alucard, Divino) ou por <strong style="color:var(--text)">tipo de peça</strong>
+                            (Camisetas, Moletons, Tênis). Cada produto pertence a uma única categoria.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script>
+    let modoEdicao = false;
+    let idEditando = null;
+
+    function editarCategoria(el) {
+        const id = el.dataset.id;
+        const nome = el.dataset.nome;
+        const descricao = el.dataset.desc;
+        const colecao = el.dataset.colecao;
+
+        modoEdicao = true;
+        idEditando = id;
+
+        document.getElementById('form-card-titulo').textContent = 'Editar categoria';
+        document.getElementById('nome').value = nome;
+        document.getElementById('descricao').value = descricao || '';
+        document.getElementById('colecao').value = colecao || '';
+        document.getElementById('btn-save-text').textContent = 'Salvar alterações';
+        document.getElementById('btn-cancelar-edicao').style.display = '';
+
+        document.getElementById('form-nova').action = '/painel/categorias/' + id + '/editar';
+
+        document.querySelector('.cat-form-sticky')
+            .scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function cancelarEdicao() {
+        modoEdicao = false;
+        idEditando = null;
+        document.getElementById('form-card-titulo').textContent = 'Nova categoria';
+        document.getElementById('nome').value = '';
+        document.getElementById('descricao').value = '';
+        document.getElementById('colecao').value = '';
+        document.getElementById('btn-save-text').textContent = 'Criar categoria';
+        document.getElementById('btn-cancelar-edicao').style.display = 'none';
+        document.getElementById('form-nova').action = '/painel/categorias';
+    }
+</script>
+</body>
+</html>
