@@ -57,28 +57,6 @@
             </div>
         </div>
 
-        <div class="filter-group">
-            <div class="filter-title" onclick="toggleGroup(this)">
-                Coleção
-                <span class="filter-title-icon">›</span>
-            </div>
-
-            <div class="filter-body">
-                <label class="filter-option"
-                       th:each="colecao : ${colecoes}">
-
-                    <input type="checkbox"
-                           class="filter-colecao"
-                           th:value="${colecao}">
-
-                    <span class="filter-option-inner">
-                    <span class="filter-check"></span>
-                    <span class="filter-option-text" th:text="${colecao}">Shadow Drop</span>
-                </span>
-                </label>
-            </div>
-        </div>
-
     </aside>
 
     <main class="categoria-content">
@@ -101,9 +79,7 @@
 
                  th:data-id="${p.id}"
 
-                 th:data-tamanhos="${tamanhosProdutoMap[p.id]}"
-
-                 th:data-colecao="${colecaoProdutoMap[p.id]}">
+                 th:data-tamanhos="${tamanhosProdutoMap[p.id]}">
 
                 <div class="product-img-wrap">
 
@@ -112,7 +88,7 @@
                          th:alt="${p.nome}"
                          class="product-img"/>
 
-<!--                    caso n tiver imagem-->
+                    <!--                    caso n tiver imagem-->
                     <img th:unless="${imagemMap != null and imagemMap[p.id] != null}"
                          th:src="@{/images/no-image.png}"
                          alt="Sem imagem"
@@ -152,6 +128,7 @@
 
 <script th:src="@{/js/cursor.js}"></script>
 <script th:src="@{/js/filtro.js}"></script>
+
 
 </body>
 </html>

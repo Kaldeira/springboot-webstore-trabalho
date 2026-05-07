@@ -40,7 +40,7 @@ public class MainController {
         model.addAttribute("telaAtiva", "home");
 
         {// ultimos produtos
-            List<Produtos> produtos = produtoRepository.findUltimosAtivos(PageRequest.of(0, 5));
+            List<Produtos> produtos = produtoRepository.findUltimosAtivos(PageRequest.of(0, 8));
             model.addAttribute("ultimos_produtos", produtos);
 
             Map<Long, String> catMap = new HashMap<>();
@@ -69,9 +69,9 @@ public class MainController {
 
     private List<Slide> getSlides() {
         return List.of(
-                new Slide("/imagens/alucard.png", "/colecao/1"),
-                new Slide("/imagens/divino.png", "/colecao/2"),
-                new Slide("/imagens/morte.png", "/colecao/3")
+                new Slide("/imagens/alucard.png", "/colecao/alucard"),
+                new Slide("/imagens/divino.png", "/colecao/divino"),
+                new Slide("/imagens/morte.png", "/colecao/morte")
         );
     }
 

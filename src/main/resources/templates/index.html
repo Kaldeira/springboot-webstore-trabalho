@@ -131,33 +131,6 @@
 </section>
 
 
-<section class="categories-section reveal">
-    <div class="section-header">
-        <h2 class="section-title">Coleções</h2>
-        <a href="#" class="section-link">Ver todas</a>
-    </div>
-    <div class="categories-grid">
-
-        <div th:if="${categorias == null or #lists.isEmpty(categorias)}"
-             style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-family:var(--font-cond);font-size:13px;letter-spacing:.1em;text-transform:uppercase">
-            Nenhuma coleção disponível
-        </div>
-
-        <div th:each="cat, stat : ${categorias}" class="category-card">
-            <div class="cat-bg"
-                 th:classappend="'cat-bg-' + ${(stat.index % 4) + 1}"
-                 th:text="${#strings.substring(cat.nome, 0, 3).toUpperCase()}">CAT
-            </div>
-            <div class="category-info">
-                <div class="category-name" th:text="${cat.nome}">Coleção</div>
-                <div class="category-count"
-                     th:text="${cat.produtos != null ? cat.produtos.size() + ' produtos' : '0 produtos'}">0 produtos
-                </div>
-            </div>
-        </div>
-
-    </div>
-</section>
 
 <div class="perks-bar reveal">
     <div class="perk">
@@ -216,7 +189,6 @@
 </script>
 
 <script>
-    // ── Hero slideshow ──
     document.addEventListener('DOMContentLoaded', () => {
         const slides = document.querySelectorAll('.slide');
         const heroBtn = document.getElementById('heroBtn');
@@ -364,8 +336,6 @@
         const container = document.getElementById('qm-variantes');
         container.innerHTML = '';
 
-        // VARIANTES_DATA é injetado via Thymeleaf inline JS
-        // Chave pode ser string ou número dependendo do JSON
         const variantes = VARIANTES_DATA[produtoId] || VARIANTES_DATA[String(produtoId)] || [];
 
         if (!variantes.length) {

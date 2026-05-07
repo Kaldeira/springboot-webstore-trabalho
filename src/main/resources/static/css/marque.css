@@ -16,15 +16,9 @@
     animation: marquee 22s linear infinite;
 }
 
-.marquee-track span {
-    padding: 0 2rem;
-}
+.marquee-track span { padding: 0 2rem; }
 
 @keyframes marquee {
-    from {
-        transform: translateX(0)
-    }
-    to {
-        transform: translateX(-50%)
-    }
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
 }

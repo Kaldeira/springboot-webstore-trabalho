@@ -161,4 +161,42 @@ public class ProdutosController {
 
         return "categoria";
     }
+
+    @GetMapping("/colecao/{nome}")
+    public String colecao(@PathVariable String nome, Model model) {
+
+        List<Produtos> produtos = produtoRepository.buscarProColecao(nome);
+
+        model.addAttribute("produtos", produtos);
+
+        // tamanhos disponíveis
+        List<String> tamanhos = varianteRepository.buscarTamanhosPorColecao(nome);
+
+        model.addAttribute("tamanhos", tamanhos);
+
+        Map<Long, String> imagemMap = new HashMap<>();
+
+        Map<Long, String> tamanhosProdutoMap = new HashMap<>();
+
+        for (Produtos p : produtos) {
+
+            List<ImagemProduto> imgs = imagemRepository.findByProdutoId(p.getId());
+
+            if (!imgs.isEmpty()) {
+                imagemMap.put(p.getId(), imgs.get(0).getUrl());
+            }
+
+            String tamanhosStr = p.getVariantes().stream().map(Variante::getTamanho).distinct().reduce((a, b) -> a + "," + b).orElse("");
+
+            tamanhosProdutoMap.put(p.getId(), tamanhosStr);
+        }
+
+        model.addAttribute("imagemMap", imagemMap);
+
+        model.addAttribute("tamanhosProdutoMap", tamanhosProdutoMap);
+
+        model.addAttribute("categoriaNome", nome);
+
+        return "colecao";
+    }
 }

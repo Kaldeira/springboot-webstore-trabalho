@@ -18,6 +18,7 @@ nav {
     letter-spacing: .06em;
     color: var(--text);
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 .nav-links {
@@ -54,17 +55,9 @@ nav {
     transition: width .25s;
 }
 
-.nav-links a:hover {
-    color: var(--text);
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-.nav-links a.active {
-    color: var(--text);
-}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--text); }
 
 .nav-right {
     display: flex;
@@ -128,13 +121,9 @@ nav {
     border-color: var(--accent);
 }
 
-.login-btn i {
-    font-size: 13px;
-}
+.login-btn i { font-size: 13px; }
 
-.dropdown {
-    position: relative;
-}
+.dropdown { position: relative; }
 
 .dropdown > a {
     display: flex;
@@ -147,37 +136,26 @@ nav {
     font-size: 10px;
     position: relative;
     top: 1px;
+    transition: transform .2s;
 }
 
-.dropdown:hover .dropdown-icon {
-    transform: rotate(180deg);
-}
+.dropdown:hover .dropdown-icon { transform: rotate(180deg); }
 
 .dropdown-menu {
     position: absolute;
     top: calc(100% + 18px);
     left: 0;
-
     min-width: 240px;
     padding: 12px 0;
-
     background: rgba(10, 10, 10, 0.98);
     backdrop-filter: blur(14px);
-
     border: 1px solid var(--border);
     border-radius: 14px;
-
     list-style: none;
-
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-
-    transition:
-            opacity .2s ease,
-            transform .2s ease,
-            visibility .2s;
-
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
     box-shadow: 0 10px 40px rgba(0,0,0,.45);
 }
 
@@ -187,28 +165,20 @@ nav {
     transform: translateY(0);
 }
 
-.dropdown-menu li {
-    width: 100%;
-}
+.dropdown-menu li { width: 100%; }
 
 .dropdown-menu a {
     display: flex;
     align-items: center;
-
     padding: 12px 18px;
-
     font-family: var(--font-cond);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .12em;
     text-transform: uppercase;
-
     color: var(--muted);
     text-decoration: none;
-
-    transition:
-            background .2s,
-            color .2s;
+    transition: background .2s, color .2s;
 }
 
 .dropdown-menu a:hover {
@@ -216,6 +186,94 @@ nav {
     color: var(--text);
 }
 
-.dropdown-menu a::after {
+.dropdown-menu a::after { display: none; }
+
+/* ── Hamburger Menu ── */
+.nav-hamburger {
     display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--text);
+    transition: transform .3s, opacity .3s;
+}
+
+.nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ── Mobile nav drawer ── */
+.nav-mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    z-index: 99;
+    flex-direction: column;
+    padding: 32px 28px;
+    gap: 0;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+}
+
+.nav-mobile-drawer.open {
+    display: flex;
+    transform: translateX(0);
+}
+
+.nav-mobile-link {
+    font-family: var(--font-cond);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    transition: color .2s;
+}
+
+.nav-mobile-link:hover { color: var(--text); }
+
+.nav-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+/* ── Responsive breakpoints ── */
+@media (max-width: 900px) {
+    nav { padding: 0 24px; }
+
+    .nav-links { display: none; }
+
+    .nav-hamburger { display: flex; }
+
+    .nav-right .login-btn span { display: none; }
+    .nav-right .login-btn { padding: 8px 12px; }
+    .nav-right { gap: 12px; }
+}
+
+@media (max-width: 480px) {
+    nav { padding: 0 16px; }
+    .nav-logo { font-size: 22px; }
 }

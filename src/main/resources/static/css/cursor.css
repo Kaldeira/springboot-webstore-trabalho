@@ -16,3 +16,7 @@
     width: 40px;
     height: 40px;
 }
+
+@media (hover: none) and (pointer: coarse) {
+    #cursor { display: none; }
+}

@@ -70,3 +70,14 @@ filtrosTamanho.forEach(el => {
 filtrosColecao.forEach(el => {
     el.addEventListener('change', aplicarFiltros);
 });
+
+function toggleGroup(titleEl) {
+    titleEl.closest('.filter-group').classList.toggle('collapsed');
+}
+
+function closeSidebar() {
+    document.querySelector('.filters-sidebar').classList.remove('open');
+}
+function openSidebar() {
+    document.querySelector('.filters-sidebar').classList.add('open');
+}

@@ -22,4 +22,15 @@ public interface VarianteRepository extends JpaRepository<Variante, Long> {
     ORDER BY v.tamanho ASC
 """)
     List<String> buscarTamanhosPorCategoria(@Param("categoria") String categoria);
+
+    @Query("""
+    SELECT DISTINCT v.tamanho
+    FROM Variante v
+    JOIN v.produto p
+    JOIN Categorias c ON c.id = p.categoriaId
+    WHERE LOWER(c.colecao) = LOWER(:colecao)
+    AND v.estoque > 0
+    ORDER BY v.tamanho ASC
+""")
+    List<String> buscarTamanhosPorColecao(@Param("colecao") String colecao);
 }

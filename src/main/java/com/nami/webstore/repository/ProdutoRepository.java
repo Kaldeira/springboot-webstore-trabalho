@@ -18,37 +18,45 @@ public interface ProdutoRepository extends JpaRepository<Produtos, Long> {
     List<Produtos> findAllComVariantes();
 
     @Query("""
-        SELECT p
-        FROM Produtos p
-        JOIN Categorias c ON c.id = p.categoriaId
-        WHERE LOWER(c.nome) = LOWER(:nomeCategoria)
-        AND p.ativo = true
-        ORDER BY p.criadoEm DESC
-    """)
+                SELECT p
+                FROM Produtos p
+                JOIN Categorias c ON c.id = p.categoriaId
+                WHERE LOWER(c.colecao) = LOWER(:nomeColecao)
+                AND p.ativo = true
+                ORDER BY p.criadoEm DESC
+            """)
+    List<Produtos> buscarProColecao(String nomeColecao);
+
+    @Query("""
+                SELECT p
+                FROM Produtos p
+                JOIN Categorias c ON c.id = p.categoriaId
+                WHERE LOWER(c.nome) = LOWER(:nomeCategoria)
+                AND p.ativo = true
+                ORDER BY p.criadoEm DESC
+            """)
     List<Produtos> buscarPorCategoria(String nomeCategoria);
 
     @Query("""
-SELECT DISTINCT p
-FROM Produtos p
-JOIN Variante v ON v.produto.id = p.id
-JOIN Categorias c ON c.id = p.categoriaId
+            SELECT DISTINCT p
+            FROM Produtos p
+            JOIN Variante v ON v.produto.id = p.id
+            JOIN Categorias c ON c.id = p.categoriaId
+            
+            WHERE LOWER(c.nome) = LOWER(:categoria)
+            AND p.ativo = true
+            
+            AND (
+                :tamanhos IS NULL
+                OR v.tamanho IN :tamanhos
+            )
+            
+            AND (
+                :colecoes IS NULL
+                OR c.colecao IN :colecoes
+            )
+            """)
+    List<Produtos> buscarComFiltros(@Param("categoria") String categoria, @Param("tamanhos") List<String> tamanhos, @Param("colecoes") List<String> colecoes);
 
-WHERE LOWER(c.nome) = LOWER(:categoria)
-AND p.ativo = true
 
-AND (
-    :tamanhos IS NULL
-    OR v.tamanho IN :tamanhos
-)
-
-AND (
-    :colecoes IS NULL
-    OR c.colecao IN :colecoes
-)
-""")
-    List<Produtos> buscarComFiltros(
-            @Param("categoria") String categoria,
-            @Param("tamanhos") List<String> tamanhos,
-            @Param("colecoes") List<String> colecoes
-    );
 }
