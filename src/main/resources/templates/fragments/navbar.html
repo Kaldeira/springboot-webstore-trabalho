@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
+<head></head>
 <body>
 <div th:fragment="navbar">
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
@@ -12,75 +11,118 @@
 
         <ul class="nav-links">
             <li>
-                <a th:href="@{/}"
-                   th:classappend="${telaAtiva == 'home'} ? ' active' : ''">
-                    Lançamentos
-                </a>
+                <a th:href="@{/}" th:classappend="${telaAtiva == 'home'} ? ' active' : ''">Lançamentos</a>
             </li>
-
             <li class="dropdown">
-                <a href="#">
-                    Superior
-                    <i class="fa-solid fa-chevron-down dropdown-icon"></i>
-                </a>
-
+                <a href="#">Superior <i class="fa-solid fa-chevron-down dropdown-icon"></i></a>
                 <ul class="dropdown-menu">
-                    <li><a th:href="@{/categoria/camisetas}">T-Shirt & Camisas</a></li>
-                    <li><a th:href="@{/categoria/Moletons}">Moletom & Jaquetas</a></li>
+                    <li><a th:href="@{/categoria/camisetas}">T-Shirt &amp; Camisas</a></li>
+                    <li><a th:href="@{/categoria/Moletons}">Moletom &amp; Jaquetas</a></li>
                 </ul>
             </li>
-
             <li class="dropdown">
-                <a href="#">
-                    Inferior
-                    <i class="fa-solid fa-chevron-down dropdown-icon"></i>
-                </a>
-
+                <a href="#">Inferior <i class="fa-solid fa-chevron-down dropdown-icon"></i></a>
                 <ul class="dropdown-menu">
                     <li><a th:href="@{/categoria/calcas}">Calças</a></li>
-                    <li><a  th:href="@{/categoria/shorts}">Shorts</a></li>
+                    <li><a th:href="@{/categoria/shorts}">Shorts</a></li>
                 </ul>
             </li>
-
-            <li><a href="#">Sale</a></li>
-            <li  th:if="${session.usuarioLogado != null && session.usuarioLogado.getTipo().ordinal() != 1}">
-                <a th:href="@{/panelProdutos}">Painel Funcionarios</a>
+            <li th:if="${session.usuarioLogado != null &amp;&amp; session.usuarioLogado.getTipo().ordinal() != 1}">
+                <a th:href="@{/panelProdutos}">Painel</a>
             </li>
         </ul>
+
         <div class="nav-right">
+            <button class="theme-btn" id="theme-btn" title="Alternar tema" aria-label="Alternar tema">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </button>
 
-            <!-- se n estiver logado -->
-            <a th:if="${session.usuarioLogado == null}"
-               th:href="@{/login}"
-               class="login-btn">
+            <a th:if="${session.usuarioLogado == null}" th:href="@{/login}" class="login-btn">
                 <i class="fa-solid fa-user"></i>
-                Login
+                <span class="login-btn-text">Login</span>
             </a>
-
-            <!-- se estiver logado -->
-            <a th:if="${session.usuarioLogado != null}"
-               th:href="@{/perfil}"
-               class="login-btn">
+            <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="login-btn">
                 <i class="fa-solid fa-user"></i>
-                <span th:text="${session.usuarioLogado.nome}"></span>
+                <span th:text="${session.usuarioLogado.nome}" class="login-btn-text"></span>
             </a>
-
             <form th:if="${session.usuarioLogado != null}" th:action="@{/logout}" method="post" class="logout-form">
-                <button type="submit" class="login-btn">
+                <button type="submit" class="login-btn" title="Sair">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    Sair
                 </button>
             </form>
-<!--            </a>-->
-
-
-            <button class="cart-btn">
+            <button class="cart-btn" id="cart-btn-nav" title="Carrinho">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="cart-count" id="cart-count">0</span>
             </button>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
-
     </nav>
+
+    <div class="nav-mobile-drawer" id="nav-mobile-drawer">
+        <a th:href="@{/}" class="nav-mobile-link">Lançamentos</a>
+        <a th:href="@{/categoria/camisetas}" class="nav-mobile-link">T-Shirt &amp; Camisas</a>
+        <a th:href="@{/categoria/Moletons}" class="nav-mobile-link">Moletom &amp; Jaquetas</a>
+        <a th:href="@{/categoria/calcas}" class="nav-mobile-link">Calças</a>
+        <a th:href="@{/categoria/shorts}" class="nav-mobile-link">Shorts</a>
+        <div class="nav-mobile-actions">
+            <a th:if="${session.usuarioLogado == null}" th:href="@{/login}" class="login-btn" style="justify-content:center">
+                <i class="fa-solid fa-user"></i> Login
+            </a>
+            <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="login-btn" style="justify-content:center">
+                <i class="fa-solid fa-user"></i>
+                <span th:text="${session.usuarioLogado.nome}"></span>
+            </a>
+            <form th:if="${session.usuarioLogado != null}" th:action="@{/logout}" method="post">
+                <button type="submit" class="login-btn" style="width:100%;justify-content:center">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var saved = localStorage.getItem('nemesis_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+
+        //drop down para mobile
+        (function () {
+            var hbg = document.getElementById('nav-hamburger');
+            var drw = document.getElementById('nav-mobile-drawer');
+            if (hbg && drw) {
+                hbg.addEventListener('click', function () {
+                    var open = drw.classList.toggle('open');
+                    hbg.classList.toggle('open', open);
+                    document.body.style.overflow = open ? 'hidden' : '';
+                });
+            }
+        })();
+
+        (function () {
+            function syncIcon(theme) {
+                var icon = document.getElementById('theme-icon');
+                if (!icon) return;
+                icon.className = theme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+
+            var current = localStorage.getItem('nemesis_theme') || 'dark';
+            syncIcon(current);
+
+            var btn = document.getElementById('theme-btn');
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    var html  = document.documentElement;
+                    var next  = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                    html.setAttribute('data-theme', next);
+                    localStorage.setItem('nemesis_theme', next);
+                    syncIcon(next);
+                });
+            }
+        })();
+    </script>
 </div>
 </body>
 </html>

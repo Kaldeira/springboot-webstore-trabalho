@@ -1,28 +1,83 @@
-/* segue esse estilo aqui em todas as paginas */
-
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+/* ── TEMA DARK (padrão) ── */
 :root {
-    --bg: #0a0a0a;
-    --bg2: #111111;
-    --bg3: #1a1a1a;
-    --text: #e8e4dc;
-    --muted: #6b6760;
-    --accent: darkred;
-    --accent2: #ff3c2e;
-    --border: rgba(255, 255, 255, 0.07);
+    --bg:        #0a0a0a;
+    --bg2:       #111111;
+    --bg3:       #1a1a1a;
+    --bg-nav:    rgba(10, 10, 10, 0.92);
+    --bg-nav-m:  rgba(10, 10, 10, 0.98);
+    --bg-drop:   rgba(10, 10, 10, 0.98);
+    --bg-modal:  rgba(0, 0, 0, 0.70);
+    --bg-overlay:rgba(0, 0, 0, 0.60);
+    --text:      #e8e4dc;
+    --muted:     #6b6760;
+    --accent:    darkred;
+    --accent2:   #ff3c2e;
+    --border:    rgba(255, 255, 255, 0.07);
+    --border-s:  rgba(255, 255, 255, 0.05);
+    --shadow:    rgba(0, 0, 0, 0.45);
+    --hover-bg:  rgba(255, 255, 255, 0.04);
+    --btn-hover-text: #0a0a0a;
+    --check-bg:  #0a0a0a;
+    --input-focus-bg: #151515;
+    --noise-opacity: 0.03;
     --font-display: 'Bebas Neue', sans-serif;
-    --font-cond: 'Barlow Condensed', sans-serif;
-    --font-body: 'Barlow', sans-serif;
+    --font-cond:    'Barlow Condensed', sans-serif;
+    --font-body:    'Barlow', sans-serif;
+
+    --bg-nav-panel: rgba(10, 10, 10, 0.95);
+    --bg-bar:       rgba(10, 10, 10, 0.96);
+    --bg-modal-ov:  rgba(0, 0, 0, 0.75);
+    --row-hover:    rgba(255, 255, 255, 0.02);
+    --card-hover:   rgba(255, 255, 255, 0.14);
+    --sep-color:    rgba(255, 255, 255, 0.18);
+    --subtle-bg:    rgba(255, 255, 255, 0.03);
+    --subtle-bg2:   rgba(255, 255, 255, 0.04);
+    --no-img-color: rgba(255, 255, 255, 0.06);
+    --focus-bg:     #131313;
 }
 
-html {
-    scroll-behavior: smooth;
+/* ── TEMA LIGHT ── */
+[data-theme="light"] {
+    --bg:        #f5f3ef;
+    --bg2:       #eeebe5;
+    --bg3:       #e4e1da;
+    --bg-nav:    rgba(245, 243, 239, 0.92);
+    --bg-nav-m:  rgba(245, 243, 239, 0.98);
+    --bg-drop:   rgba(245, 243, 239, 0.98);
+    --bg-modal:  rgba(0, 0, 0, 0.45);
+    --bg-overlay:rgba(0, 0, 0, 0.35);
+    --text:      #141210;
+    --muted:     #7a756e;
+    --accent:    darkred;
+    --accent2:   #e02010;
+    --border:    rgba(0, 0, 0, 0.10);
+    --border-s:  rgba(0, 0, 0, 0.07);
+    --shadow:    rgba(0, 0, 0, 0.15);
+    --hover-bg:  rgba(0, 0, 0, 0.04);
+    --btn-hover-text: #f5f3ef;
+    --check-bg:  #f5f3ef;
+    --input-focus-bg: #e8e5de;
+    --noise-opacity: 0.015;
+
+    --bg-nav-panel: rgba(245, 243, 239, 0.95);
+    --bg-bar:       rgba(245, 243, 239, 0.96);
+    --bg-modal-ov:  rgba(0, 0, 0, 0.50);
+    --row-hover:    rgba(0, 0, 0, 0.03);
+    --card-hover:   rgba(0, 0, 0, 0.10);
+    --sep-color:    rgba(0, 0, 0, 0.15);
+    --subtle-bg:    rgba(0, 0, 0, 0.03);
+    --subtle-bg2:   rgba(0, 0, 0, 0.04);
+    --no-img-color: rgba(0, 0, 0, 0.06);
+    --focus-bg:     #e8e5de;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
     background: var(--bg);
@@ -31,15 +86,12 @@ body {
     font-weight: 300;
     overflow-x: hidden;
     cursor: none;
+    transition: background .3s, color .3s;
 }
 
 @media (hover: none) and (pointer: coarse) {
-    body {
-        cursor: auto;
-    }
-    * {
-        cursor: auto !important;
-    }
+    body        { cursor: auto; }
+    *           { cursor: auto !important; }
 }
 
 body::before {
@@ -47,7 +99,14 @@ body::before {
     position: fixed;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.03;
+    opacity: var(--noise-opacity);
     pointer-events: none;
     z-index: 1000;
+}
+
+/* ── transição suave ao trocar tema ── */
+nav, .cart-drawer, .quick-modal, .form-card, .filters-sidebar,
+.product-card, .form-input, .field-input, .dropdown-menu,
+.nav-mobile-drawer, footer, .perfil-wrap, .checkout-wrap {
+    transition: background .3s, border-color .3s, color .3s;
 }

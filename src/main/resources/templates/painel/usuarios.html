@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Nemesis - Usuários</title>
 
+    <script>
+        (function () {
+            var tema = localStorage.getItem('nemesis_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', tema);
+        })();
+    </script>
+
     <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
     <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
     <link rel="stylesheet" th:href="@{/css/painel/usuarios.css}"/>

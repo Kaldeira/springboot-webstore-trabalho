@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:fragment="blocoEnderecos">
+    <div class="form-card">
+        <div class="form-card-header">
+            <span class="form-card-title">Meus endereços</span>
+        </div>
+        <div class="form-card-body">
+
+            <div th:if="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)}" class="empty-pedidos">
+                <div class="empty-pedidos-text">Nenhum endereço cadastrado</div>
+            </div>
+
+            <div class="endereco-row" th:each="end : ${usuario.enderecos}">
+                <div>
+                    <div class="endereco-apelido">
+                        <span th:if="${end.principal}" class="principal-dot"></span>
+                        <span th:text="${end.apelido != null and !end.apelido.isEmpty() ? end.apelido : 'Endereço'}">Casa</span>
+                    </div>
+                    <div class="endereco-texto"
+                         th:text="${end.logradouro + ', ' + end.numero
+                               + (end.complemento != null and !end.complemento.isEmpty() ? ' — ' + end.complemento : '')
+                               + ' · ' + end.bairro + ', ' + end.cidade + '/' + end.estado
+                               + ' · CEP ' + end.cep}">
+                    </div>
+                </div>
+                <form th:action="@{/perfil/enderecos/{id}/deletar(id=${end.id})}" method="post">
+                    <button type="submit" class="btn-rm-endereco" onclick="return confirm('Remover endereço?')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </form>
+            </div>
+
+
+            <button class="accordion-toggle"
+                    th:id="'btn-add-end-' + ${usuario.id}"
+                    th:onclick="'toggleEndereco(this)'"
+                    style="margin-top:16px">
+                <i class="fa-solid fa-plus"></i> Adicionar endereço
+            </button>
+
+            <div class="accordion-content"
+                 th:classappend="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)} ? ' open' : ''">
+                <form th:action="@{/perfil/enderecos}" method="post">
+                    <div class="field-row" style="margin-bottom:14px">
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Apelido <span class="opt">Opcional</span></label>
+                            <input class="field-input" name="apelido" type="text" placeholder="Casa, Trabalho…"/>
+                        </div>
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">CEP <span class="req">*</span></label>
+                            <input class="field-input" name="cep" type="text" placeholder="00000-000"
+                                   id="cep-input" oninput="buscarCep(this.value)" required/>
+                        </div>
+                    </div>
+                    <div class="field-row" style="margin-bottom:14px">
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Logradouro <span class="req">*</span></label>
+                            <input class="field-input" name="logradouro" type="text" id="logradouro-input" placeholder="Rua, Av…" required/>
+                        </div>
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Número <span class="req">*</span></label>
+                            <input class="field-input" name="numero" type="text" placeholder="123" required/>
+                        </div>
+                    </div>
+                    <div class="field-row" style="margin-bottom:14px">
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Bairro <span class="req">*</span></label>
+                            <input class="field-input" name="bairro" type="text" id="bairro-input" required/>
+                        </div>
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Complemento <span class="opt">Opcional</span></label>
+                            <input class="field-input" name="complemento" type="text" placeholder="Apto, Bloco…"/>
+                        </div>
+                    </div>
+                    <div class="field-row" style="margin-bottom:16px">
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Cidade <span class="req">*</span></label>
+                            <input class="field-input" name="cidade" type="text" id="cidade-input" required/>
+                        </div>
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label">Estado <span class="req">*</span></label>
+                            <input class="field-input" name="estado" type="text" id="estado-input" placeholder="SP" maxlength="2" required/>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end">
+                        <button type="submit" class="btn-save"><span>Salvar endereço</span></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

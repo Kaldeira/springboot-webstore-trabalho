@@ -61,7 +61,7 @@
     border-radius: 0;
 }
 
-.filter-select option { background: #1a1a1a; color: var(--text); }
+.filter-select option { background: var(--bg3); color: var(--text); }
 
 .count-label {
     font-family: var(--font-cond);
@@ -114,7 +114,7 @@
 }
 
 .usuarios-table tbody tr { transition: background .15s; }
-.usuarios-table tbody tr:hover { background: rgba(255,255,255,.02); }
+.usuarios-table tbody tr:hover { background: var(--row-hover); }
 
 .u-avatar {
     width: 36px; height: 36px;
@@ -146,7 +146,7 @@
 }
 
 .tipo-ADMIN       { background: rgba(200,240,74,.08); border: 1px solid rgba(200,240,74,.25); color: var(--accent); }
-.tipo-COMUM       { background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--muted); }
+.tipo-COMUM       { background: var(--subtle-bg2); border: 1px solid var(--border); color: var(--muted); }
 .tipo-FUNCIONARIO { background: rgba(0,180,255,.08); border: 1px solid rgba(0,180,255,.25); color: #00b4ff; }
 
 .u-actions { display: flex; gap: 8px; align-items: center; }
@@ -166,7 +166,7 @@
     white-space: nowrap;
 }
 
-.btn-edit-u:hover { border-color: rgba(255,255,255,.2); color: var(--text); }
+.btn-edit-u:hover { border-color: var(--muted); color: var(--text); }
 
 .btn-del-u {
     width: 32px; height: 32px;
@@ -186,7 +186,7 @@
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.75);
+    background: var(--bg-modal-ov);
     z-index: 1000;
     display: none;
     place-items: center;
@@ -214,7 +214,7 @@
     padding: 11px 22px; cursor: pointer; transition: border-color .2s, color .2s;
 }
 
-.btn-modal-cancel:hover { border-color: rgba(255,255,255,.2); color: var(--text); }
+.btn-modal-cancel:hover { border-color: var(--muted); color: var(--text); }
 
 .btn-modal-save {
     font-family: var(--font-cond); font-weight: 700; font-size: 11px; letter-spacing: .16em;

@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/cursor.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/carrinho.css}">
+    <link rel="stylesheet" th:href="@{/css/card-produtos.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@500;700&display=swap"
@@ -34,23 +36,23 @@
             <span class="cart-subtotal-val" id="cart-total-val">R$ 0,00</span>
         </div>
         <p class="cart-frete-hint">Frete grátis para compras acima de R$ 499</p>
-        <a href="/sale" class="btn-checkout"><span>Finalizar compra</span></a>
+        <a href="/checkout" class="btn-checkout"><span>Finalizar compra</span></a>
     </div>
 </div>
 
-<div class="quick-modal-overlay" id="quick-modal">
-    <div class="quick-modal" onclick="event.stopPropagation()">
-        <div class="quick-modal-nome" id="qm-nome">—</div>
-        <div class="quick-modal-preco" id="qm-preco">—</div>
-        <div class="quick-modal-label">Selecione a variante</div>
-        <div class="variante-options" id="qm-variantes"></div>
-        <div class="quick-err" id="quick-err">Selecione uma variante para continuar</div>
-        <div class="quick-modal-actions">
-            <button class="btn-modal-close-q" onclick="fecharModal()">Voltar</button>
-            <button class="btn-add-cart" onclick="adicionarAoCarrinho()"><span>Adicionar ao carrinho</span></button>
-        </div>
-    </div>
-</div>
+<!--<div class="quick-modal-overlay" id="quick-modal">-->
+<!--    <div class="quick-modal" onclick="event.stopPropagation()">-->
+<!--        <div class="quick-modal-nome" id="qm-nome">—</div>-->
+<!--        <div class="quick-modal-preco" id="qm-preco">—</div>-->
+<!--        <div class="quick-modal-label">Selecione a variante</div>-->
+<!--        <div class="variante-options" id="qm-variantes"></div>-->
+<!--        <div class="quick-err" id="quick-err">Selecione uma variante para continuar</div>-->
+<!--        <div class="quick-modal-actions">-->
+<!--            <button class="btn-modal-close-q" onclick="fecharModal()">Voltar</button>-->
+<!--            <button class="btn-add-cart" onclick="adicionarAoCarrinho()"><span>Adicionar ao carrinho</span></button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 <div th:replace="fragments/marque :: marque_topo"></div>
 <div th:replace="fragments/navbar :: navbar"></div>
@@ -83,8 +85,6 @@
             Nenhum produto disponível no momento
         </div>
 
-<!--        <p th:text="${#lists.size(ultimos_produtos)}"></p>-->
-
         <div th:each="p : ${ultimos_produtos}"
              class="product-card"
              th:data-id="${p.id}"
@@ -92,101 +92,84 @@
              th:data-preco="${p.preco}"
              th:data-img="${imagemMap != null and imagemMap[p.id] != null ? imagemMap[p.id] : ''}">
 
-            <div class="product-img-wrap">
-                <img th:if="${imagemMap != null and imagemMap[p.id] != null}"
-                     th:src="@{${imagemMap[p.id]}}"
-                     th:alt="${p.nome}"
-                     class="product-img"/>
-                <div th:unless="${imagemMap != null and imagemMap[p.id] != null}"
-                     class="product-img-bg"
-                     th:text="${#strings.substring(p.nome, 0, 3).toUpperCase()}">???
+            <a th:href="@{/produto/{id}(id=${p.id})}" class="card-link">
+                <div class="product-img-wrap">
+                    <div class="card-imgs" th:data-card-id="${p.id}">
+                        <div th:each="url, us : ${imagensMap != null and imagensMap[p.id] != null ? imagensMap[p.id] : (imagemMap != null and imagemMap[p.id] != null ? #lists.listOf(imagemMap[p.id]) : #lists.listOf(''))}"
+                             class="card-img-slide"
+                             th:classappend="${us.index == 0} ? ' active'">
+                            <img th:if="${!#strings.isEmpty(url)}" th:src="@{${url}}" th:alt="${p.nome}" class="product-img"/>
+                            <div th:if="${#strings.isEmpty(url)}"
+                                 class="product-img-bg"
+                                 th:text="${#strings.substring(p.nome, 0, 3).toUpperCase()}">???</div>
+                        </div>
+                    </div>
+
+                    <span class="product-badge badge-new">Novo</span>
+
+                    <button class="card-arrow card-arrow-prev"
+                            th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
+                            th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),-1)'"
+                            type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="card-arrow card-arrow-next"
+                            th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
+                            th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),1)'"
+                            type="button"><i class="fa-solid fa-chevron-right"></i></button>
+
+                    <div class="card-dots"
+                         th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}">
+                        <div th:each="u, us2 : ${imagensMap[p.id]}"
+                             class="card-dot"
+                             th:classappend="${us2.index == 0} ? ' active'"></div>
+                    </div>
+
+<!--                    <button class="product-quick"-->
+<!--                            th:onclick="'event.preventDefault();abrirModal(' + ${p.id} + ')'"-->
+<!--                            type="button">Comprar rápido-->
+<!--                    </button>-->
+
+                    <button class="product-quick"
+                            th:href="@{/produto/{id}(id=${p.id})}"
+                            type="button">Comprar
+                    </button>
+
+
                 </div>
 
-                <span class="product-badge badge-new">Novo</span>
-                <button class="product-quick"
-                        th:onclick="'abrirModal(' + ${p.id} + ')'"
-                        type="button">Comprar rápido
-                </button>
-            </div>
-
-            <div class="product-info">
-                <div class="product-name" th:text="${p.nome}">Produto</div>
-                <div class="product-sizes" th:if="${variantesMap != null and variantesMap[p.id] != null}">
+                <div class="product-info">
+                    <div class="product-name" th:text="${p.nome}">Produto</div>
+                    <div class="product-sizes" th:if="${variantesMap != null and variantesMap[p.id] != null}">
                     <span th:each="v, vs : ${variantesMap[p.id]}"
                           th:if="${vs.index < 5}"
                           class="size-dot"
                           th:text="${v.tamanho}"></span>
-                    <span th:if="${variantesMap[p.id].size() > 5}" class="size-dot"
-                          th:text="'+' + ${variantesMap[p.id].size() - 5}"></span>
+                        <span th:if="${variantesMap[p.id].size() > 5}" class="size-dot"
+                              th:text="'+' + ${variantesMap[p.id].size() - 5}"></span>
+                    </div>
+                    <div class="product-price"
+                         th:text="'R$ ' + ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00
+                    </div>
+                    <div class="product-installment"
+                         th:text="'3x de R$ ' + ${#numbers.formatDecimal(p.preco / 3, 1, 'POINT', 2, 'COMMA')} + ' sem juros'"></div>
                 </div>
-                <div class="product-price"
-                     th:text="'R$ ' + ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00
-                </div>
-                <div class="product-installment"
-                     th:text="'3x de R$ ' + ${#numbers.formatDecimal(p.preco / 3, 1, 'POINT', 2, 'COMMA')} + ' sem juros'"></div>
-            </div>
+            </a>
         </div>
-
     </div>
 </section>
 
 
+<div th:replace="fragments/footer :: rodape"></div>
 
-<div class="perks-bar reveal">
-    <div class="perk">
-        <div class="perk-icon">✈</div>
-        <div>
-            <div class="perk-label">Frete Grátis</div>
-            <div class="perk-sub">Compras acima de R$499</div>
-        </div>
-    </div>
-    <div class="perk">
-        <div class="perk-icon">↩</div>
-        <div>
-            <div class="perk-label">Troca Fácil</div>
-            <div class="perk-sub">30 dias para trocar</div>
-        </div>
-    </div>
-    <div class="perk">
-        <div class="perk-icon">■</div>
-        <div>
-            <div class="perk-label">Pix com desconto</div>
-            <div class="perk-sub">5% off no pagamento à vista</div>
-        </div>
-    </div>
-    <div class="perk">
-        <div class="perk-icon">☑</div>
-        <div>
-            <div class="perk-label">Compra Segura</div>
-            <div class="perk-sub">Site 100% protegido</div>
-        </div>
-    </div>
-</div>
+<!--<script th:inline="javascript">-->
+<!--    <![CDATA[-->
+<!--    var VARIANTES_DATA = [[${variantesJson}]] {};-->
+<!--    ]]>-->
+<!--</script>-->
 
-<footer class="reveal">
-    <div>
-        <div class="footer-brand">nemesis</div>
-        <p class="footer-tagline">Estilo de roupas feitos para quem vive na escuridão. Drops limitados, qualidade sem
-            compromisso.</p>
-        <div class="footer-social">
-            <a href="#" class="social-btn">IG</a>
-            <a href="#" class="social-btn">TK</a>
-            <a href="#" class="social-btn">WA</a>
-        </div>
-    </div>
-</footer>
-<div class="footer-bottom">
-    <span class="footer-copy">© 2025 nemesis. Todos os direitos reservados.</span>
-    <span class="footer-copy">CNPJ 00.000.000/0001-00</span>
-</div>
 
 <script th:src="@{/js/cursor.js}"></script>
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const VARIANTES_DATA = /*[[${variantesJson}]]*/ {};
-    /*]]>*/
-</script>
+<script th:src="@{/js/carrinho.js}"></script>
+<script th:src="@{/js/cards.js}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -202,209 +185,8 @@
             }, 4000);
         }
 
-        // Conectar botão do carrinho na navbar
-        const cartBtn = document.querySelector('.cart-btn');
-        if (cartBtn) cartBtn.addEventListener('click', abrirCarrinho);
-
-        renderizarCarrinho();
         atualizarContador();
-    });
-
-    const CART_KEY = 'nemesis_cart_v1';
-
-    function getCart() {
-        try {
-            return JSON.parse(localStorage.getItem(CART_KEY)) || [];
-        } catch {
-            return [];
-        }
-    }
-
-    function saveCart(c) {
-        localStorage.setItem(CART_KEY, JSON.stringify(c));
-    }
-
-    function fmt(val) {
-        return 'R$ ' + val.toFixed(2).replace('.', ',');
-    }
-
-    function atualizarContador() {
-        const total = getCart().reduce((s, i) => s + i.quantidade, 0);
-        const el = document.getElementById('cart-count');
-        if (el) el.textContent = total;
-    }
-
-    function renderizarCarrinho() {
-        const cart = getCart();
-        const body = document.getElementById('cart-body');
-        const foot = document.getElementById('cart-foot');
-        if (!body) return;
-
-        if (!cart.length) {
-            body.innerHTML = `<div class="cart-empty">
-                <div class="cart-empty-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-                <div class="cart-empty-text">Seu carrinho está vazio</div>
-            </div>`;
-            if (foot) foot.style.display = 'none';
-            return;
-        }
-
-        if (foot) foot.style.display = '';
-        let subtotal = 0;
-        let html = '';
-
-        cart.forEach((item, idx) => {
-            subtotal += item.preco * item.quantidade;
-            const imgHtml = item.img
-                ? `<img src="${item.img}" alt="${item.nome}"/>`
-                : `<div class="no-img">${item.nome.substring(0, 3).toUpperCase()}</div>`;
-            html += `<div class="cart-item">
-                <div class="cart-item-img">${imgHtml}</div>
-                <div class="cart-item-info">
-                    <div class="cart-item-nome">${escHtml(item.nome)}</div>
-                    <div class="cart-item-variante">${escHtml(item.variante)}</div>
-                    <div class="cart-item-qty">
-                        <button class="qty-btn" onclick="alterarQtd(${idx},-1)">−</button>
-                        <div class="qty-num">${item.quantidade}</div>
-                        <button class="qty-btn" onclick="alterarQtd(${idx},1)">+</button>
-                    </div>
-                    <button class="cart-item-rm" onclick="removerItem(${idx})">
-                        <i class="fa-solid fa-xmark"></i> Remover
-                    </button>
-                </div>
-                <div class="cart-item-preco">${fmt(item.preco * item.quantidade)}</div>
-            </div>`;
-        });
-
-        body.innerHTML = html;
-        const tv = document.getElementById('cart-total-val');
-        if (tv) tv.textContent = fmt(subtotal);
-        bindCursor();
-    }
-
-    function escHtml(s) {
-        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    function alterarQtd(idx, delta) {
-        const cart = getCart();
-        if (!cart[idx]) return;
-        cart[idx].quantidade = Math.max(1, cart[idx].quantidade + delta);
-        saveCart(cart);
         renderizarCarrinho();
-        atualizarContador();
-    }
-
-    function removerItem(idx) {
-        const cart = getCart();
-        cart.splice(idx, 1);
-        saveCart(cart);
-        renderizarCarrinho();
-        atualizarContador();
-    }
-
-    function abrirCarrinho() {
-        renderizarCarrinho();
-        document.getElementById('cart-overlay').classList.add('open');
-        document.getElementById('cart-drawer').classList.add('open');
-    }
-
-    function fecharCarrinho() {
-        document.getElementById('cart-overlay').classList.remove('open');
-        document.getElementById('cart-drawer').classList.remove('open');
-    }
-
-    let produtoAtual = null;
-    let varianteSelecionada = null;
-
-    function abrirModal(produtoId) {
-        const card = document.querySelector(`.product-card[data-id="${produtoId}"]`);
-        if (!card) return;
-
-        produtoAtual = {
-            id: produtoId,
-            nome: card.dataset.nome || '',
-            preco: parseFloat(card.dataset.preco) || 0,
-            img: card.dataset.img || ''
-        };
-        varianteSelecionada = null;
-
-        document.getElementById('qm-nome').textContent = produtoAtual.nome;
-        document.getElementById('qm-preco').textContent = fmt(produtoAtual.preco);
-        document.getElementById('quick-err').style.display = 'none';
-
-        const container = document.getElementById('qm-variantes');
-        container.innerHTML = '';
-
-        const variantes = VARIANTES_DATA[produtoId] || VARIANTES_DATA[String(produtoId)] || [];
-
-        if (!variantes.length) {
-            container.innerHTML = '<p style="color:var(--muted);font-size:13px;font-family:var(--font-cond)">Sem variantes disponíveis</p>';
-        } else {
-            variantes.forEach(v => {
-                const btn = document.createElement('button');
-                btn.className = 'variante-opt' + (v.estoque === 0 ? ' esgotado' : '');
-                btn.textContent = v.tamanho + ' / ' + v.cor;
-                if (v.estoque === 0) btn.title = 'Esgotado';
-                btn.addEventListener('click', function () {
-                    document.querySelectorAll('.variante-opt').forEach(b => b.classList.remove('selected'));
-                    this.classList.add('selected');
-                    varianteSelecionada = v;
-                    document.getElementById('quick-err').style.display = 'none';
-                });
-                container.appendChild(btn);
-            });
-        }
-
-        document.getElementById('quick-modal').classList.add('open');
-        bindCursor();
-    }
-
-    function fecharModal() {
-        document.getElementById('quick-modal').classList.remove('open');
-        produtoAtual = null;
-        varianteSelecionada = null;
-    }
-
-    function adicionarAoCarrinho() {
-        if (!produtoAtual) return;
-
-        const variantes = VARIANTES_DATA[produtoAtual.id] || VARIANTES_DATA[String(produtoAtual.id)] || [];
-        if (variantes.length > 0 && !varianteSelecionada) {
-            document.getElementById('quick-err').style.display = 'block';
-            return;
-        }
-
-        const cart = getCart();
-        const varKey = varianteSelecionada
-            ? `${produtoAtual.id}-${varianteSelecionada.id}`
-            : `${produtoAtual.id}-unico`;
-
-        const existing = cart.find(i => i.key === varKey);
-        if (existing) {
-            existing.quantidade++;
-        } else {
-            cart.push({
-                key: varKey,
-                produtoId: produtoAtual.id,
-                nome: produtoAtual.nome,
-                preco: produtoAtual.preco,
-                img: produtoAtual.img,
-                variante: varianteSelecionada
-                    ? `${varianteSelecionada.tamanho} / ${varianteSelecionada.cor}`
-                    : 'Padrão',
-                quantidade: 1
-            });
-        }
-
-        saveCart(cart);
-        atualizarContador();
-        fecharModal();
-        abrirCarrinho();
-    }
-
-    document.getElementById('quick-modal').addEventListener('click', function (e) {
-        if (e.target === this) fecharModal();
     });
 </script>
 </body>

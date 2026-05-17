@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div th:fragment="enderecoForm">
+  <div class="field-row" style="margin-bottom:14px">
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Apelido <span class="opt">Opcional</span></label>
+      <input class="field-input" id="co-apelido" type="text" placeholder="Casa, Trabalho…"/>
+    </div>
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">CEP <span class="req">*</span></label>
+      <input class="field-input" id="co-cep" type="text" placeholder="00000-000"/>
+    </div>
+  </div>
+  <div class="field-row" style="margin-bottom:14px">
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Logradouro <span class="req">*</span></label>
+      <input class="field-input" id="co-logradouro" type="text" placeholder="Rua, Av…"/>
+    </div>
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Número <span class="req">*</span></label>
+      <input class="field-input" id="co-numero" type="text" placeholder="123"/>
+    </div>
+  </div>
+  <div class="field-row" style="margin-bottom:14px">
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Bairro <span class="req">*</span></label>
+      <input class="field-input" id="co-bairro" type="text"/>
+    </div>
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Complemento <span class="opt">Opcional</span></label>
+      <input class="field-input" id="co-complemento" type="text" placeholder="Apto, Bloco…"/>
+    </div>
+  </div>
+  <div class="field-row" style="margin-bottom:8px">
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Cidade <span class="req">*</span></label>
+      <input class="field-input" id="co-cidade" type="text"/>
+    </div>
+    <div class="field-group" style="margin-bottom:0">
+      <label class="field-label">Estado <span class="req">*</span></label>
+      <input class="field-input" id="co-estado" type="text" placeholder="SP" maxlength="2"/>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -7,6 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Nemesis - Panel</title>
 
+    <script>
+        (function () {
+            var tema = localStorage.getItem('nemesis_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', tema);
+        })();
+    </script>
+
     <link rel="stylesheet" th:href="@{/css/cursor.css}" />
     <link rel="stylesheet" th:href="@{/css/painel/panel.css}" />
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -46,10 +53,8 @@
 
             <div class="form-sections">
 
-                <!-- ── Coluna principal ── -->
                 <div>
 
-                    <!-- Informações gerais -->
                     <div class="form-card">
                         <div class="form-card-header">
                             <span class="form-card-title">Informações gerais</span>
@@ -85,11 +90,6 @@
                                     <label class="field-label" for="categoriaId">
                                         Categoria <span class="req">*</span>
                                     </label>
-                                    <!--
-                                      th:field="*{categoriaId}" — bind para Long categoriaId no ProdutoForm.
-                                      th:each itera sobre a lista "categorias" injetada pelo controller:
-                                        model.addAttribute("categorias", categoriaService.listarTodas());
-                                    -->
                                     <select class="field-select"
                                             id="categoriaId"
                                             th:field="*{categoriaId}"
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <!-- Variantes -->
+
                     <div class="form-card">
                         <div class="form-card-header">
                             <span class="form-card-title">Variantes</span>
@@ -141,12 +141,7 @@
                                 <div></div>
                             </div>
 
-                            <!--
-                              Variantes são adicionadas/removidas via JS e enviadas como campos indexados:
-                                variantes[0].tamanho, variantes[0].cor, variantes[0].estoque
-                                variantes[1].tamanho, …
-                              O ProdutoForm deve ter: List<VarianteForm> variantes
-                            -->
+
                             <div class="variantes-list" id="variantes-list"></div>
                             <div class="field-error-msg" id="err-variantes" style="display:none;margin-bottom:10px">
                                 Adicione ao menos uma variante.
@@ -159,10 +154,8 @@
 
                 </div>
 
-                <!-- ── Coluna lateral ── -->
                 <div>
 
-                    <!-- Disponibilidade -->
                     <div class="form-card">
                         <div class="form-card-header">
                             <span class="form-card-title">Disponibilidade</span>
@@ -181,17 +174,13 @@
                         </div>
                     </div>
 
-                    <!-- Imagens -->
+
                     <div class="form-card">
                         <div class="form-card-header">
                             <span class="form-card-title">Imagens</span>
                         </div>
                         <div class="form-card-body">
-                            <!--
-                              name="imagens" — no controller: @RequestParam("imagens") List<MultipartFile> imagens
-                              O Thymeleaf não faz bind automático de MultipartFile via th:field em listas,
-                              então usamos name direto e tratamos no @PostMapping.
-                            -->
+
                             <div class="upload-area" id="upload-area">
                                 <input type="file" id="f-imagens" name="imagens"
                                        multiple accept="image/*"
@@ -212,7 +201,7 @@
                 </div>
             </div>
 
-            <!-- Barra de submit -->
+
             <div class="submit-bar">
                 <div class="submit-info">
                     Campos com <strong>*</strong> são obrigatórios
@@ -238,11 +227,6 @@
         const i = varIdx++;
         const row = document.createElement('div');
         row.className = 'variante-row'; row.dataset.idx = i;
-        /*
-          name="variantes[i].tamanho" etc. — Spring MVC faz bind automático
-          em List<VarianteForm> variantes quando os índices são contíguos.
-          Ao remover uma linha, os índices ficam com lacuna — o JS renumera.
-        */
         row.innerHTML = `
       <input class="field-input" type="text"
              name="variantes[${i}].tamanho" value="${tam}"
@@ -265,7 +249,6 @@
         reindex();
     }
 
-    // renumera os índices após remoção para manter list binding contíguo
     function reindex() {
         document.querySelectorAll('.variante-row').forEach((row, i) => {
             row.querySelectorAll('input').forEach(inp => {
@@ -307,7 +290,6 @@
 
     function removeImage(i) {
         imageFiles.splice(i, 1);
-        // Sincroniza o input de arquivo com o array atualizado
         const dt = new DataTransfer();
         imageFiles.forEach(f => dt.items.add(f));
         document.getElementById('f-imagens').files = dt.files;

@@ -22,7 +22,7 @@
 }
 
 .cat-row:last-child { border-bottom: 1px solid var(--border); }
-.cat-row:hover { background: rgba(255,255,255,.02); }
+.cat-row:hover { background: var(--row-hover); }
 
 .cat-row-nome {
     font-family: var(--font-cond);
@@ -71,7 +71,7 @@
     white-space: nowrap;
 }
 
-.btn-edit-cat:hover { border-color: rgba(255,255,255,.2); color: var(--text); }
+.btn-edit-cat:hover { border-color: var(--muted); color: var(--text); }
 
 .btn-delete-cat {
     width: 34px; height: 34px;

@@ -1,14 +1,14 @@
 @import "global.css";
 
 .form-card {
-    background: #111;
-    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg2);
+    border: 1px solid var(--border);
     margin-bottom: 24px;
 }
 
 .form-card-header {
     padding: 18px 26px;
-    border-bottom: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -45,12 +45,12 @@
 }
 
 .field-label .req { color: var(--accent2); }
-.field-label .opt { font-weight: 500; font-size: 10px; color: rgba(107,103,96,.55); }
+.field-label .opt { font-weight: 500; font-size: 10px; color: var(--muted); }
 
 .field-input, .field-select, .field-textarea {
     width: 100%;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg3);
+    border: 1px solid var(--border);
     color: var(--text);
     font-family: var(--font-body);
     font-size: 14px;
@@ -74,7 +74,7 @@
     padding-right: 40px;
 }
 
-.field-select option { background: #1a1a1a; color: var(--text); }
+.field-select option { background: var(--bg3); color: var(--text); }
 .field-hint { margin-top: 7px; font-size: 11px; color: var(--muted); line-height: 1.5; }
 
 .btn-save {
@@ -103,7 +103,7 @@
 
 .btn-save:hover::after { transform: translateX(0); }
 .btn-save span { position: relative; z-index: 1; }
-.btn-save:hover span { color: #0a0a0a; }
+.btn-save:hover span { color: var(--btn-hover-text); }
 
 .btn-secondary {
     font-family: var(--font-cond);
@@ -112,7 +112,7 @@
     letter-spacing: .16em;
     text-transform: uppercase;
     background: none;
-    border: 1px solid rgba(255,255,255,.07);
+    border: 1px solid var(--border);
     color: var(--muted);
     padding: 11px 22px;
     cursor: pointer;
@@ -123,7 +123,7 @@
     gap: 8px;
 }
 
-.btn-secondary:hover { border-color: rgba(255,255,255,.2); color: var(--text); }
+.btn-secondary:hover { border-color: var(--border); color: var(--text); }
 
 .flash {
     padding: 14px 18px;
@@ -155,8 +155,8 @@
 .perfil-avatar {
     width: 80px;
     height: 80px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,.07);
+    background: var(--bg3);
+    border: 1px solid var(--border);
     display: grid;
     place-items: center;
     font-family: var(--font-display);
@@ -193,7 +193,7 @@
 }
 
 .perfil-tipo.admin { border: 1px solid rgba(200,240,74,.3); color: var(--accent); }
-.perfil-tipo.comum { border: 1px solid rgba(255,255,255,.1); color: var(--muted); }
+.perfil-tipo.comum { border: 1px solid var(--border); color: var(--muted); }
 .perfil-tipo.func  { border: 1px solid rgba(0,180,255,.3); color: #00b4ff; }
 
 .perfil-grid {
@@ -208,7 +208,7 @@
 
 .pedido-row {
     padding: 18px 0;
-    border-bottom: 1px solid rgba(255,255,255,.05);
+    border-bottom: 1px solid var(--border-s);
 }
 
 .pedido-row:first-child { padding-top: 0; }
@@ -271,7 +271,7 @@
 /* Endereços */
 .endereco-row {
     padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,.05);
+    border-bottom: 1px solid var(--border-s);
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -304,7 +304,7 @@
 
 .btn-rm-endereco {
     background: none;
-    border: 1px solid rgba(255,255,255,.07);
+    border: 1px solid var(--border);
     color: var(--muted);
     width: 28px;
     height: 28px;
@@ -326,7 +326,7 @@
     letter-spacing: .16em;
     text-transform: uppercase;
     background: none;
-    border: 1px dashed rgba(255,255,255,.07);
+    border: 1px dashed var(--border);
     color: var(--muted);
     padding: 10px 16px;
     cursor: pointer;
@@ -352,8 +352,8 @@
     align-items: center;
     gap: 12px;
     padding: 14px 18px;
-    background: rgba(255,255,255,.02);
-    border: 1px solid rgba(255,255,255,.05);
+    background: var(--hover-bg);
+    border: 1px solid var(--border-s);
     text-decoration: none;
     color: var(--muted);
     font-family: var(--font-cond);

@@ -102,10 +102,26 @@ public class PainelController {
         List<Variante> variantes = varianteRepository.findByProdutoId(id);
         produto.setVariantes(variantes);
 
-        model.addAttribute("variantesJson", variantes);
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            java.util.List<java.util.Map<String,Object>> vList = new java.util.ArrayList<>();
+            for (Variante v : variantes) {
+                java.util.Map<String,Object> vm = new java.util.HashMap<>();
+                vm.put("id", v.getId());
+                vm.put("tamanho", v.getTamanho());
+                vm.put("cor", v.getCor());
+                vm.put("estoque", v.getEstoque());
+                vList.add(vm);
+            }
+            model.addAttribute("variantesJson", mapper.writeValueAsString(vList));
+        } catch (Exception ex) {
+            model.addAttribute("variantesJson", "[]");
+        }
 
         // produto
         model.addAttribute("produto", produto);
+
+        model.addAttribute("paginaAtiva", "listarProdutos");
 
         return "painel/editarProduto";
     }
@@ -118,7 +134,10 @@ public class PainelController {
     @PostMapping("/produtos/{id}/editar")
     public String salvarEdicao(@PathVariable Long id,
                                @ModelAttribute("produto") Produtos form,
-                               @RequestParam(value = "imagens", required = false) List<MultipartFile> imagens,
+                               @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                               @RequestParam(value = "var_tamanho", required = false) List<String> varTamanhos,
+                               @RequestParam(value = "var_cor",     required = false) List<String> varCores,
+                               @RequestParam(value = "var_estoque", required = false) List<Integer> varEstoques,
                                HttpSession session,
                                RedirectAttributes ra) {
         if (semAcesso(session)) return "redirect:/";
@@ -139,27 +158,33 @@ public class PainelController {
 
             produtoRepository.save(produto);
 
-            // substituir variantes: remove antigas, salva novas
-            if (form.getVariantes() != null && !form.getVariantes().isEmpty()) {
+            // substituir variantes usando listas paralelas
+            if (varTamanhos != null && !varTamanhos.isEmpty()) {
                 List<Variante> antigas = varianteRepository.findByProdutoId(id);
                 varianteRepository.deleteAll(antigas);
-                for (Variante v : form.getVariantes()) {
+                for (int vi = 0; vi < varTamanhos.size(); vi++) {
+                    String tam = varTamanhos.get(vi);
+                    if (tam == null || tam.isBlank()) continue;
+                    Variante v = new Variante();
                     v.setProduto(produto);
+                    v.setTamanho(tam.trim());
+                    v.setCor(varCores != null && vi < varCores.size() ? varCores.get(vi).trim() : "Único");
+                    v.setEstoque(varEstoques != null && vi < varEstoques.size() && varEstoques.get(vi) != null ? varEstoques.get(vi) : 0);
                     varianteRepository.save(v);
                 }
             }
 
             // salvar novas imagens enviadas
-            if (imagens != null) {
-                for (MultipartFile arquivo : imagens) {
-                    if (!arquivo.isEmpty()) {
+            if (files != null) {
+                boolean temPrincipal = imagemRepository.findPrincipalByProdutoId(id).isPresent();
+                for (MultipartFile arquivo : files) {
+                    if (arquivo != null && !arquivo.isEmpty()) {
                         String nomeArquivo = salvarArquivo(arquivo);
                         ImagemProduto img = new ImagemProduto();
                         img.setProduto(produto);
                         img.setUrl("/uploads/" + nomeArquivo);
-                        // se não há nenhuma principal, a primeira nova vira principal
-                        boolean temPrincipal = imagemRepository.findPrincipalByProdutoId(id).isPresent();
                         img.setPrincipal(!temPrincipal);
+                        temPrincipal = true;
                         imagemRepository.save(img);
                     }
                 }
@@ -181,10 +206,10 @@ public class PainelController {
         if (semAcesso(session)) return "redirect:/";
 
         try {
-            // apaga imagens e variantes primeiro (cascade não está ativo no modelo)
+            // tentar apagar o produto primeiro, caso de vinculo retornar no catch
+            produtoRepository.deleteById(id);
             imagemRepository.deleteAll(imagemRepository.findByProdutoId(id));
             varianteRepository.deleteAll(varianteRepository.findByProdutoId(id));
-            produtoRepository.deleteById(id);
             ra.addFlashAttribute("flashSucesso", "Produto deletado.");
         } catch (Exception e) {
             e.printStackTrace();

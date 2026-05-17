@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
+<head></head>
 <body>
-
 <div th:fragment="painel_navbar">
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -17,17 +15,27 @@
                 <span class="sep">/</span>
                 <span class="current" th:if="${paginaAtiva == 'addProdutos'}">Novo produto</span>
                 <span class="current" th:if="${paginaAtiva == 'listarProdutos'}">Todos os produtos</span>
-                <span class="current" th:if="${paginaAtiva == 'categorias'}">Catar Gurias</span>
+                <span class="current" th:if="${paginaAtiva == 'categorias'}">Categorias</span>
                 <span class="current" th:if="${paginaAtiva == 'pedidos'}">Todos os Pedidos</span>
-                <span class="current" th:if="${paginaAtiva == 'listarUsuarios'}">Todos os Usuarios</span>
+                <span class="current" th:if="${paginaAtiva == 'listarUsuarios'}">Todos os Usuários</span>
             </div>
         </div>
-        <div class="nav-right">
-            "  <span th:if="${session.usuarioLogado.nome != null}" class="nav-user" th:text="${session.usuarioLogado.nome}">Usuário</span>
-            <!--        <span class="nav-user" th:text="${session.usuarioLogado.tipo.ordinal()}">Usuário</span>-->
 
-            <span th:if="${session.usuarioLogado.tipo.ordinal() == 0}" class="role-badge admin"> Admin</span>
-            <span th:if="${session.usuarioLogado.tipo.ordinal() == 2}" class="role-badge func"> Funcionário </span>
+        <div class="nav-right">
+            <span th:if="${session.usuarioLogado.nome != null}"
+                  class="nav-user"
+                  th:text="${session.usuarioLogado.nome}">Usuário</span>
+
+            <span th:if="${session.usuarioLogado.tipo.ordinal() == 0}" class="role-badge admin">Admin</span>
+            <span th:if="${session.usuarioLogado.tipo.ordinal() == 2}" class="role-badge func">Funcionário</span>
+
+            <button class="theme-btn" id="theme-btn" title="Alternar tema" aria-label="Alternar tema">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </button>
+
+            <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
             <form th:action="@{/logout}" method="post" class="logout-form">
                 <button type="submit" class="logout-btn">Sair</button>
@@ -35,6 +43,45 @@
         </div>
     </nav>
 
+    <script>
+        (function () {
+            function syncIcon(theme) {
+                var icon = document.getElementById('theme-icon');
+                if (!icon) return;
+                icon.className = theme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+
+            var current = localStorage.getItem('nemesis_theme') || 'dark';
+            syncIcon(current);
+
+            var btn = document.getElementById('theme-btn');
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    var html  = document.documentElement;
+                    var next  = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                    html.setAttribute('data-theme', next);
+                    localStorage.setItem('nemesis_theme', next);
+                    syncIcon(next);
+                });
+            }
+
+            var toggle = document.getElementById('sidebar-toggle');
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebar-overlay');
+            if (toggle && sidebar) {
+                toggle.addEventListener('click', function () {
+                    var open = sidebar.classList.toggle('open');
+                    if (overlay) overlay.classList.toggle('open', open);
+                });
+                if (overlay) {
+                    overlay.addEventListener('click', function () {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('open');
+                    });
+                }
+            }
+        })();
+    </script>
 </div>
 </body>
 </html>

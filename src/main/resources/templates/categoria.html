@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/categoria.css}">
     <link rel="stylesheet" th:href="@{/css/cursor.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/card-produtos.css}">
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@500;700&display=swap"
           rel="stylesheet"/>
@@ -105,42 +107,70 @@
 
                  th:data-colecao="${colecaoProdutoMap[p.id]}">
 
-                <div class="product-img-wrap">
+                <a th:href="@{/produto/{id}(id=${p.id})}" class="card-link">
+                    <div class="product-img-wrap">
+                        <div class="card-imgs" th:data-card-id="${p.id}">
+                            <div th:each="url, us : ${imagensMap != null and imagensMap[p.id] != null ? imagensMap[p.id] : null}"
+                                 class="card-img-slide"
+                                 th:classappend="${us.index == 0} ? ' active'">
+                                <img th:if="${!#strings.isEmpty(url)}" th:src="@{${url}}" th:alt="${p.nome}"
+                                     class="product-img"/>
+                                <div th:if="${#strings.isEmpty(url)}"
+                                     class="product-img-bg"
+                                     th:text="${#strings.substring(p.nome, 0, 3).toUpperCase()}">???
+                                </div>
+                            </div>
+                        </div>
 
-                    <img th:if="${imagemMap != null and imagemMap[p.id] != null}"
-                         th:src="@{${imagemMap[p.id]}}"
-                         th:alt="${p.nome}"
-                         class="product-img"/>
+                        <span class="product-badge badge-new">Novo</span>
 
-<!--                    caso n tiver imagem-->
-                    <img th:unless="${imagemMap != null and imagemMap[p.id] != null}"
-                         th:src="@{/images/no-image.png}"
-                         alt="Sem imagem"
-                         class="product-img fallback-img"/>
+                        <button class="card-arrow card-arrow-prev"
+                                th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
+                                th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),-1)'"
+                                type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="card-arrow card-arrow-next"
+                                th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
+                                th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),1)'"
+                                type="button"><i class="fa-solid fa-chevron-right"></i></button>
 
-                    <button class="product-quick">
-                        Comprar rápido
-                    </button>
+                        <div class="card-dots"
+                             th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}">
+                            <div th:each="u, us2 : ${imagensMap[p.id]}"
+                                 class="card-dot"
+                                 th:classappend="${us2.index == 0} ? ' active'"></div>
+                        </div>
 
-                </div>
+                        <!--                    <button class="product-quick"-->
+                        <!--                            th:onclick="'event.preventDefault();abrirModal(' + ${p.id} + ')'"-->
+                        <!--                            type="button">Comprar rápido-->
+                        <!--                    </button>-->
 
-                <div class="product-info">
+                        <button class="product-quick"
+                                th:href="@{/produto/{id}(id=${p.id})}"
+                                type="button">Comprar
+                        </button>
 
-                    <div class="product-name"
-                         th:text="${p.nome}">
-                        Produto
+
                     </div>
 
-                    <div class="product-price"
-                         th:text="'R$ ' + ${#numbers.formatDecimal(p.preco,1,'POINT',2,'COMMA')}">
-                        R$ 0,00
-                    </div>
+                    <div class="product-info">
 
-                    <div class="product-installment"
-                         th:text="'3x de R$ ' + ${#numbers.formatDecimal(p.preco / 3,1,'POINT',2,'COMMA')} + ' sem juros'">
-                    </div>
+                        <div class="product-name"
+                             th:text="${p.nome}">
+                            Produto
+                        </div>
 
-                </div>
+                        <div class="product-price"
+                             th:text="'R$ ' + ${#numbers.formatDecimal(p.preco,1,'POINT',2,'COMMA')}">
+                            R$ 0,00
+                        </div>
+
+                        <div class="product-installment"
+                             th:text="'3x de R$ ' + ${#numbers.formatDecimal(p.preco / 3,1,'POINT',2,'COMMA')} + ' sem juros'">
+                        </div>
+
+                    </div>
+                </a>
 
             </div>
 
@@ -150,8 +180,26 @@
 
 </section>
 
+<div th:replace="fragments/footer :: rodape"></div>
+
 <script th:src="@{/js/cursor.js}"></script>
 <script th:src="@{/js/filtro.js}"></script>
+
+<script th:inline="javascript">
+    <![CDATA[
+    var VARIANTES_DATA = [[${variantesJson}]] {};
+    ]]>
+</script>
+
+<script th:src="@{/js/carrinho.js}"></script>
+<script th:src="@{/js/cards.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        atualizarContador();
+        renderizarCarrinho();
+    });
+</script>
 
 </body>
 </html>

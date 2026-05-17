@@ -7,7 +7,7 @@ nav {
     justify-content: space-between;
     padding: 0 40px;
     height: 64px;
-    background: rgba(10, 10, 10, 0.92);
+    background: var(--bg-nav);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
 }
@@ -81,7 +81,7 @@ nav {
 
 .cart-btn:hover {
     background: var(--accent);
-    color: #0a0a0a;
+    color: var(--btn-hover-text);
     border-color: var(--accent);
 }
 
@@ -117,7 +117,7 @@ nav {
 
 .login-btn:hover {
     background: var(--accent);
-    color: #0a0a0a;
+    color: var(--btn-hover-text);
     border-color: var(--accent);
 }
 
@@ -143,11 +143,11 @@ nav {
 
 .dropdown-menu {
     position: absolute;
-    top: calc(100% + 18px);
+    top: 100%;
     left: 0;
     min-width: 240px;
     padding: 12px 0;
-    background: rgba(10, 10, 10, 0.98);
+    background: var(--bg-drop);
     backdrop-filter: blur(14px);
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -156,7 +156,7 @@ nav {
     visibility: hidden;
     transform: translateY(10px);
     transition: opacity .2s ease, transform .2s ease, visibility .2s;
-    box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    box-shadow: 0 10px 40px var(--shadow);
 }
 
 .dropdown:hover .dropdown-menu {
@@ -182,13 +182,12 @@ nav {
 }
 
 .dropdown-menu a:hover {
-    background: rgba(255,255,255,.04);
+    background: var(--hover-bg);
     color: var(--text);
 }
 
 .dropdown-menu a::after { display: none; }
 
-/* ── Hamburger Menu ── */
 .nav-hamburger {
     display: none;
     flex-direction: column;
@@ -213,7 +212,6 @@ nav {
 .nav-hamburger.open span:nth-child(2) { opacity: 0; }
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* ── Mobile nav drawer ── */
 .nav-mobile-drawer {
     display: none;
     position: fixed;
@@ -221,7 +219,7 @@ nav {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10,10,10,0.98);
+    background: var(--bg-nav-m);
     backdrop-filter: blur(16px);
     border-top: 1px solid var(--border);
     z-index: 99;
@@ -260,6 +258,27 @@ nav {
     margin-top: 32px;
 }
 
+
+.theme-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 13px;
+    transition: border-color .2s, color .2s, transform .3s;
+    flex-shrink: 0;
+}
+
+.theme-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: rotate(20deg);
+}
+
 /* ── Responsive breakpoints ── */
 @media (max-width: 900px) {
     nav { padding: 0 24px; }
@@ -268,9 +287,11 @@ nav {
 
     .nav-hamburger { display: flex; }
 
-    .nav-right .login-btn span { display: none; }
+    .login-btn-text { display: none; }
     .nav-right .login-btn { padding: 8px 12px; }
     .nav-right { gap: 12px; }
+
+    .logout-form .login-btn { padding: 8px 12px; }
 }
 
 @media (max-width: 480px) {

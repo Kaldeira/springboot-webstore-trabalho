@@ -1,5 +1,6 @@
 package com.nami.webstore.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nami.webstore.model.*;
 import com.nami.webstore.repository.*;
 import jakarta.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +25,16 @@ public class MainController {
     private final ProdutoRepository produtoRepository;
     private final CategoriaRepository categoriaRepository;
     private final ImagemRepository imagemRepository;
+    private final VarianteRepository varianteRepository;
 
-    public MainController(UsuarioRepository usuarioRepository, PedidoRepository pedidoRepository, EnderecoRepository enderecoRepository, ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, ImagemRepository imagemRepository) {
+    public MainController(UsuarioRepository usuarioRepository, PedidoRepository pedidoRepository, EnderecoRepository enderecoRepository, ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, ImagemRepository imagemRepository, VarianteRepository varianteRepository) {
         this.usuarioRepository = usuarioRepository;
         this.pedidoRepository = pedidoRepository;
         this.enderecoRepository = enderecoRepository;
         this.produtoRepository = produtoRepository;
         this.categoriaRepository = categoriaRepository;
         this.imagemRepository = imagemRepository;
+        this.varianteRepository = varianteRepository;
     }
 
     @GetMapping("/")
@@ -48,23 +52,78 @@ public class MainController {
             model.addAttribute("catMap", catMap);
 
             Map<Long, String> imagemMap = new HashMap<>();
+            Map<Long, List<String>> imagensMap = new HashMap<>();
             for (Produtos p : produtos) {
-
                 List<ImagemProduto> imgs = imagemRepository.findByProdutoId(p.getId());
-
                 if (!imgs.isEmpty()) {
                     imagemMap.put(p.getId(), imgs.get(0).getUrl());
+                    imagensMap.put(p.getId(), imgs.stream().map(ImagemProduto::getUrl).collect(java.util.stream.Collectors.toList()));
                 }
             }
             model.addAttribute("imagemMap", imagemMap);
+            model.addAttribute("imagensMap", imagensMap);
 
             model.addAttribute("categorias", categoriaRepository.findAll());
             model.addAttribute("paginaAtiva", "listarProdutos");
+
+            try {
+                Map<Long, List<Map<String,Object>>> variantesMap = new HashMap<>();
+                for (Produtos p : produtos) {
+                    List<Map<String,Object>> vList = new ArrayList<>();
+                    for (Variante v : varianteRepository.findByProdutoId(p.getId())) {
+                        Map<String,Object> vm = new HashMap<>();
+                        vm.put("id", v.getId());
+                        vm.put("tamanho", v.getTamanho());
+                        vm.put("cor", v.getCor());
+                        vm.put("estoque", v.getEstoque());
+                        vList.add(vm);
+                    }
+                    variantesMap.put(p.getId(), vList);
+                }
+                model.addAttribute("variantesJson", new ObjectMapper().writeValueAsString(variantesMap));
+            } catch (Exception e) {
+                model.addAttribute("variantesJson", "{}");
+            }
 
             System.out.println(produtos.size());
         }
 
         return "index";
+    }
+
+    @GetMapping("/produto/{id}")
+    public String produto(@PathVariable Long id, Model model) {
+        Produtos p = produtoRepository.findById(id).orElse(null);
+        if (p == null) return "redirect:/";
+
+        List<ImagemProduto> imagens = imagemRepository.findByProdutoId(id);
+        List<Variante> variantes = varianteRepository.findByProdutoId(id);
+        Categorias cat = p.getCategoriaId() != null ? categoriaRepository.findById(p.getCategoriaId()).orElse(null) : null;
+
+        model.addAttribute("produto", p);
+        model.addAttribute("imagens", imagens);
+        model.addAttribute("variantes", variantes);
+        model.addAttribute("categoria", cat);
+
+        try {
+            List<Map<String,Object>> vList = new ArrayList<>();
+            for (Variante v : variantes) {
+                Map<String,Object> vm = new HashMap<>();
+                vm.put("id", v.getId());
+                vm.put("tamanho", v.getTamanho());
+                vm.put("cor", v.getCor());
+                vm.put("estoque", v.getEstoque());
+                vList.add(vm);
+            }
+            Map<Long,Object> vMap = new HashMap<>();
+            vMap.put(id, vList);
+            model.addAttribute("variantesJson", new ObjectMapper().writeValueAsString(vMap));
+            model.addAttribute("imagensPrincipais", imagens.isEmpty() ? "" : imagens.get(0).getUrl());
+        } catch (Exception e) {
+            model.addAttribute("variantesJson", "{}");
+        }
+
+        return "produto";
     }
 
     private List<Slide> getSlides() {

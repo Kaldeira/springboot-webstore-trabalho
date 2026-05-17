@@ -151,85 +151,7 @@
                     </div>
                 </div>
 
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <span class="form-card-title">Meu endereço</span>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="endereco-row" th:each="end : ${usuario.enderecos}">
-                            <div>
-                                <div class="endereco-apelido">
-                                    <span th:if="${end.principal}" class="principal-dot"></span>
-                                    <span th:text="${end.apelido != null ? end.apelido : 'Endereço'}">Casa</span>
-                                </div>
-                                <div class="endereco-texto"
-                                     th:text="${end.logradouro + ', ' + end.numero + (end.complemento != null ? ' — ' + end.complemento : '') + ' · ' + end.bairro + ', ' + end.cidade + '/' + end.estado + ' · CEP ' + end.cep}">
-                                </div>
-                            </div>
-                            <form th:action="@{/perfil/enderecos/{id}/deletar(id=${end.id})}" method="post">
-                                <button type="submit" class="btn-rm-endereco"
-                                        onclick="return confirm('Remover endereço?')">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div th:if="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)}"
-                             class="empty-pedidos">
-                            <div class="empty-pedidos-text">Nenhum endereço cadastrado</div>
-                        </div>
-
-                        <button class="accordion-toggle" onclick="toggleEndereco(this)">
-                            <i class="fa-solid fa-plus"></i> Adicionar endereço
-                        </button>
-                        <div class="accordion-content">
-                            <form th:action="@{/perfil/enderecos}" method="post">
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="apelido-f">Apelido <span class="opt">Opcional</span></label>
-                                        <input class="field-input" id="apelido-f" name="apelido" type="text" placeholder="Casa, Trabalho…"/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="cep-f">CEP <span class="req">*</span></label>
-                                        <input class="field-input" id="cep-f" name="cep" type="text" placeholder="00000-000" required/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="log-f">Logradouro <span class="req">*</span></label>
-                                        <input class="field-input" id="log-f" name="logradouro" type="text" placeholder="Rua, Av…" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="num-f">Número <span class="req">*</span></label>
-                                        <input class="field-input" id="num-f" name="numero" type="text" placeholder="123" required/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="bairro-f">Bairro <span class="req">*</span></label>
-                                        <input class="field-input" id="bairro-f" name="bairro" type="text" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="comp-f">Complemento <span class="opt">Opcional</span></label>
-                                        <input class="field-input" id="comp-f" name="complemento" type="text" placeholder="Apto, Bloco…"/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:16px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="cidade-f">Cidade <span class="req">*</span></label>
-                                        <input class="field-input" id="cidade-f" name="cidade" type="text" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="estado-f">Estado <span class="req">*</span></label>
-                                        <input class="field-input" id="estado-f" name="estado" type="text" placeholder="SP" maxlength="2" required/>
-                                    </div>
-                                </div>
-                                <div style="display:flex;justify-content:flex-end">
-                                    <button type="submit" class="btn-save"><span>Salvar endereço</span></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <div th:replace="~{fragments/endereco-perfil :: blocoEnderecos}"></div>
             </div>
 
             <div>
@@ -303,87 +225,7 @@
                 </div>
 
 
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <span class="form-card-title">Meus endereços</span>
-                    </div>
-                    <div class="form-card-body">
-                        <div th:if="${usuario.enderecos == null or #lists.isEmpty(usuario.enderecos)}"
-                             class="empty-pedidos">
-                            <div class="empty-pedidos-text">Nenhum endereço cadastrado</div>
-                        </div>
-
-                        <div class="endereco-row" th:each="end : ${usuario.enderecos}">
-                            <div>
-                                <div class="endereco-apelido">
-                                    <span th:if="${end.principal}" class="principal-dot"></span>
-                                    <span th:text="${end.apelido != null ? end.apelido : 'Endereço'}">Casa</span>
-                                </div>
-                                <div class="endereco-texto"
-                                     th:text="${end.logradouro + ', ' + end.numero + (end.complemento != null and !end.complemento.isEmpty() ? ' — ' + end.complemento : '') + ' · ' + end.bairro + ', ' + end.cidade + '/' + end.estado + ' · CEP ' + end.cep}">
-                                </div>
-                            </div>
-                            <form th:action="@{/perfil/enderecos/{id}/deletar(id=${end.id})}" method="post">
-                                <button type="submit" class="btn-rm-endereco"
-                                        onclick="return confirm('Remover endereço?')">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Adicionar endereço -->
-                        <button class="accordion-toggle" onclick="toggleEndereco(this)">
-                            <i class="fa-solid fa-plus"></i> Adicionar novo endereço
-                        </button>
-                        <div class="accordion-content">
-                            <form th:action="@{/perfil/enderecos}" method="post">
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="apelido">Apelido <span class="opt">Opcional</span></label>
-                                        <input class="field-input" id="apelido" name="apelido" type="text" placeholder="Casa, Trabalho…"/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="cep">CEP <span class="req">*</span></label>
-                                        <input class="field-input" id="cep" name="cep" type="text" placeholder="00000-000" required/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="logradouro">Logradouro <span class="req">*</span></label>
-                                        <input class="field-input" id="logradouro" name="logradouro" type="text" placeholder="Rua, Av…" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="numero">Número <span class="req">*</span></label>
-                                        <input class="field-input" id="numero" name="numero" type="text" placeholder="123" required/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:14px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="bairro">Bairro <span class="req">*</span></label>
-                                        <input class="field-input" id="bairro" name="bairro" type="text" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="complemento">Complemento <span class="opt">Opcional</span></label>
-                                        <input class="field-input" id="complemento" name="complemento" type="text" placeholder="Apto, Bloco…"/>
-                                    </div>
-                                </div>
-                                <div class="field-row" style="margin-bottom:16px">
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="cidade">Cidade <span class="req">*</span></label>
-                                        <input class="field-input" id="cidade" name="cidade" type="text" required/>
-                                    </div>
-                                    <div class="field-group" style="margin-bottom:0">
-                                        <label class="field-label" for="estado">Estado <span class="req">*</span></label>
-                                        <input class="field-input" id="estado" name="estado" type="text" placeholder="SP" maxlength="2" required/>
-                                    </div>
-                                </div>
-                                <div style="display:flex;justify-content:flex-end">
-                                    <button type="submit" class="btn-save"><span>Salvar endereço</span></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <div th:replace="~{fragments/endereco-perfil :: blocoEnderecos}"></div>
             </div>
 
             <div>
@@ -432,11 +274,29 @@
 
 <script>
     function toggleEndereco(btn) {
-        const content = btn.nextElementSibling;
-        content.classList.toggle('open');
-        btn.querySelector('i').className = content.classList.contains('open')
-            ? 'fa-solid fa-minus'
-            : 'fa-solid fa-plus';
+        var content = btn.nextElementSibling;
+        var isOpen = content.classList.toggle('open');
+        btn.querySelector('i').className = isOpen ? 'fa-solid fa-minus' : 'fa-solid fa-plus';
+    }
+
+    /* auto-preenche endereço via ViaCEP */
+    function buscarCep(valor) {
+        var cep = valor.replace(/\D/g, '');
+        if (cep.length !== 8) return;
+        fetch('https://viacep.com.br/ws/' + cep + '/json/')
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (d.erro) return;
+                var log = document.getElementById('logradouro-input');
+                var bai = document.getElementById('bairro-input');
+                var cid = document.getElementById('cidade-input');
+                var est = document.getElementById('estado-input');
+                if (log && !log.value) log.value = d.logradouro || '';
+                if (bai && !bai.value) bai.value = d.bairro    || '';
+                if (cid && !cid.value) cid.value = d.localidade || '';
+                if (est && !est.value) est.value = d.uf         || '';
+            })
+            .catch(function () {});
     }
 </script>
 </body>

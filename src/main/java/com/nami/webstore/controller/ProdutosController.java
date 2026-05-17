@@ -151,7 +151,7 @@ public class ProdutosController {
             }
         }
 
-        model.addAttribute("imagemMap", imagemMap);
+        model.addAttribute("imagensMap", imagemMap);
 
         model.addAttribute("tamanhosProdutoMap", tamanhosProdutoMap);
 
@@ -191,7 +191,7 @@ public class ProdutosController {
             tamanhosProdutoMap.put(p.getId(), tamanhosStr);
         }
 
-        model.addAttribute("imagemMap", imagemMap);
+        model.addAttribute("imagensMap", imagemMap);
 
         model.addAttribute("tamanhosProdutoMap", tamanhosProdutoMap);
 

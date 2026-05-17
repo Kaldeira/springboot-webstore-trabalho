@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script th:src="@{/js/tema.js}"></script>
+    <title th:text="'Nemesis — ' + ${produto.nome}">Nemesis — Produto</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/carrinho.css}">
+    <link rel="stylesheet" th:href="@{/css/cursor.css}">
+    <link rel="stylesheet" th:href="@{/css/produto.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-head">
+        <div class="cart-drawer-title">Carrinho</div>
+        <button class="cart-close" onclick="fecharCarrinho()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-drawer-body" id="cart-body"></div>
+    <div class="cart-drawer-foot" id="cart-foot" style="display:none">
+        <div class="cart-subtotal">
+            <span class="cart-subtotal-label">Subtotal</span>
+            <span class="cart-subtotal-val" id="cart-total-val">R$ 0,00</span>
+        </div>
+        <p class="cart-frete-hint">Frete grátis para compras acima de R$ 499</p>
+        <a href="/checkout" class="btn-checkout"><span>Finalizar compra</span></a>
+    </div>
+</div>
+
+<div class="produto-wrap">
+
+    <div class="produto-grid">
+
+        <div class="galeria" id="galeria">
+            <div class="galeria-principal" id="galeria-principal">
+                <img id="galeria-img-principal"
+                     th:if="${!#lists.isEmpty(imagens)}"
+                     th:src="@{${imagens[0].url}}"
+                     th:alt="${produto.nome}"/>
+                <div th:if="${#lists.isEmpty(imagens)}"
+                     style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:80px;color:var(--border)"
+                     th:text="${#strings.substring(produto.nome, 0, 3).toUpperCase()}">???</div>
+
+                <div class="galeria-nav" th:if="${#lists.size(imagens) > 1}">
+                    <button class="galeria-nav-btn" onclick="galeriaNav(-1)" title="Anterior">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="galeria-nav-btn" onclick="galeriaNav(1)" title="Próxima">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="galeria-dots" th:if="${#lists.size(imagens) > 1}">
+                    <button th:each="img, s : ${imagens}"
+                            class="galeria-dot"
+                            th:classappend="${s.index == 0} ? ' active'"
+                            th:onclick="'galeriaIr(' + ${s.index} + ')'"
+                            type="button">
+                    </button>
+                </div>
+            </div>
+
+            <div class="galeria-thumbs" th:if="${#lists.size(imagens) > 1}">
+                <div th:each="img, s : ${imagens}"
+                     class="galeria-thumb"
+                     th:classappend="${s.index == 0} ? ' active'"
+                     th:onclick="'galeriaIr(' + ${s.index} + ')'"
+                     style="cursor:pointer">
+                    <img th:src="@{${img.url}}" th:alt="${produto.nome}"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="produto-info">
+
+            <div class="produto-categoria-tag"
+                 th:if="${categoria != null}"
+                 th:text="${categoria.colecao + ' · ' + categoria.nome}">Coleção · Categoria</div>
+
+            <h1 class="produto-nome" th:text="${produto.nome}">Nome do Produto</h1>
+
+            <div class="produto-preco-wrap">
+                <div class="produto-preco"
+                     th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00
+                </div>
+            </div>
+            <div class="produto-parcelamento"
+                 th:text="'3x de R$ ' + ${#numbers.formatDecimal(produto.preco / 3, 1, 'POINT', 2, 'COMMA')} + ' sem juros'">
+            </div>
+
+            <hr class="produto-divider"/>
+
+            <div class="variante-grupo" th:if="${!#lists.isEmpty(variantes)}">
+                <div class="variante-label">
+                    <span>Tamanho</span>
+                    <span class="variante-selected-text" id="tam-selected"></span>
+                </div>
+                <div class="variante-opts" id="tamanho-opts"></div>
+            </div>
+
+            <button class="tabela-toggle" onclick="toggleTabela(this)" type="button">
+                <i class="fa-solid fa-ruler"></i> Guia de tamanhos
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="tabela-tamanhos" id="tabela-tamanhos">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tamanho</th>
+                        <th>Busto (cm)</th>
+                        <th>Cintura (cm)</th>
+                        <th>Quadril (cm)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>PP</td><td>80–84</td><td>60–64</td><td>86–90</td></tr>
+                    <tr><td>P</td><td>84–88</td><td>64–68</td><td>90–94</td></tr>
+                    <tr><td>M</td><td>88–92</td><td>68–72</td><td>94–98</td></tr>
+                    <tr><td>G</td><td>92–96</td><td>72–76</td><td>98–102</td></tr>
+                    <tr><td>GG</td><td>96–100</td><td>76–80</td><td>102–106</td></tr>
+                    <tr><td>XGG</td><td>100–106</td><td>80–86</td><td>106–112</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="produto-qty-wrap">
+                <span class="produto-qty-label">Quantidade</span>
+                <div class="produto-qty">
+                    <button class="produto-qty-btn" onclick="alterarQtyProd(-1)" type="button">−</button>
+                    <div class="produto-qty-num" id="prod-qty">1</div>
+                    <button class="produto-qty-btn" onclick="alterarQtyProd(1)" type="button">+</button>
+                </div>
+            </div>
+
+            <div class="produto-add-err" id="prod-err">Selecione um tamanho para continuar</div>
+
+            <button class="btn-add-produto" id="btn-add-prod" onclick="addProdutoCarrinho()" type="button">
+                <span>Adicionar ao carrinho</span>
+            </button>
+
+            <hr class="produto-divider" th:if="${produto.descricao != null and !produto.descricao.isEmpty()}"/>
+
+            <p class="produto-descricao"
+               th:if="${produto.descricao != null and !produto.descricao.isEmpty()}"
+               th:text="${produto.descricao}"></p>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: rodape"></div>
+
+<script th:src="@{/js/cursor.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var VARIANTES_DATA = JSON.parse(/*[[${variantesJson}]]*/ "{}");
+    var PRODUTO_ID     = /*[[${produto.id}]]*/ 0;
+    var PRODUTO_PRECO  = /*[[${produto.preco}]]*/ 0;
+    var IMAGENS_URLS   = /*[[${imagens.![url]}]]*/ [];
+    /*]]>*/
+</script>
+
+<!--so pra renderizar o carrinho-->
+<script th:src="@{/js/carrinho.js}"></script>
+<script th:src="@{/js/produto.js}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        _buildTamanhoOpts();
+    });
+</script>
+</body>
+</html>

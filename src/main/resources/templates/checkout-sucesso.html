@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nemesis — Pedido confirmado</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/cursor.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="checkout-wrap" style="max-width:640px">
+    <div class="sucesso-box">
+        <div class="sucesso-icone"><i class="fa-solid fa-circle-check"></i></div>
+        <h1 class="sucesso-titulo">Pedido confirmado!</h1>
+        <p class="sucesso-sub" th:text="'Pedido #' + ${pedidoId} + ' realizado com sucesso.'">Pedido realizado com sucesso.</p>
+
+        <div class="sucesso-info" th:if="${metodo == 'PIX'}">
+            <div class="sucesso-info-label">Pagamento via PIX</div>
+            <p>Escaneie o QR Code abaixo ou use a chave PIX para finalizar o pagamento.</p>
+            <div class="pix-qr" th:if="${pixQrCode != null}">
+                <img th:src="${pixQrCode}" alt="QR Code PIX" style="max-width:200px"/>
+            </div>
+            <div class="pix-copia" th:if="${pixCopiaCola != null}">
+                <input type="text" class="field-input" th:value="${pixCopiaCola}" readonly id="pix-key"/>
+                <button class="btn-save" onclick="copiarPix()" style="margin-top:8px"><span>Copiar chave</span></button>
+            </div>
+        </div>
+
+        <div class="sucesso-info" th:if="${metodo == 'CARTAO'}">
+            <div class="sucesso-info-label">Pagamento via Cartão</div>
+            <p>Você foi redirecionado ao Mercado Pago. Caso não tenha sido, clique no botão abaixo.</p>
+            <a th:href="${redirectUrl}" class="btn-save" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;margin-top:12px" th:if="${redirectUrl != null}">
+                <span>Ir para pagamento</span>
+            </a>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap">
+            <a href="/perfil" class="btn-save"><span>Meus pedidos</span></a>
+            <a href="/" class="btn-modal-close-q" style="padding:13px 24px">Continuar comprando</a>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+<script th:src="@{/js/carrinho.js}"></script>
+<script>
+    function copiarPix() {
+        var el = document.getElementById('pix-key');
+        if (el) {
+            navigator.clipboard.writeText(el.value).then(function() {
+                alert('Chave PIX copiada!');
+            });
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() { atualizarContador(); });
+</script>
+</body>
+</html>

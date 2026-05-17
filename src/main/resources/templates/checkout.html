@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nemesis — Checkout</title>
+  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+  <link rel="stylesheet" th:href="@{/css/global.css}">
+  <link rel="stylesheet" th:href="@{/css/cursor.css}">
+  <link rel="stylesheet" th:href="@{/css/checkout.css}">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="checkout-wrap">
+
+  <div class="checkout-header">
+    <h1 class="checkout-title">Finalizar Compra</h1>
+    <a href="/" class="checkout-back"><i class="fa-solid fa-arrow-left"></i> Continuar comprando</a>
+  </div>
+
+  <div class="flash success" th:if="${flashSucesso}" th:text="${flashSucesso}"></div>
+  <div class="flash error" th:if="${flashErro}" th:text="${flashErro}"></div>
+
+  <div class="checkout-grid">
+
+    <div class="checkout-left">
+
+      <div class="form-card">
+        <div class="form-card-header">
+          <span class="form-card-title"><i class="fa-solid fa-box" style="margin-right:8px;opacity:.6"></i>Resumo do pedido</span>
+        </div>
+        <div class="form-card-body">
+          <div id="checkout-items-list">
+            <div class="checkout-empty">Carregando itens do carrinho…</div>
+          </div>
+          <div class="checkout-totals" id="checkout-totals" style="display:none">
+            <div class="checkout-total-row">
+              <span>Subtotal</span>
+              <span id="co-subtotal">R$ 0,00</span>
+            </div>
+            <div class="checkout-total-row" id="co-frete-row">
+              <span>Frete</span>
+              <span id="co-frete">Grátis</span>
+            </div>
+            <div class="checkout-total-row total-final">
+              <span>Total</span>
+              <span id="co-total">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header">
+          <span class="form-card-title"><i class="fa-solid fa-location-dot" style="margin-right:8px;opacity:.6"></i>Endereço de entrega</span>
+        </div>
+        <div class="form-card-body" id="endereco-section">
+          <div th:if="${session.usuarioLogado == null}">
+            <div class="checkout-login-prompt">
+              <p>Faça login para usar seus endereços salvos ou continue como visitante.</p>
+              <a th:href="@{/login}" class="btn-save" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><span>Fazer login</span></a>
+            </div>
+          </div>
+
+          <div th:if="${session.usuarioLogado != null and enderecoSalvo != null}">
+            <div class="endereco-salvo">
+              <div class="endereco-salvo-label">Endereço cadastrado</div>
+              <div class="endereco-salvo-texto"
+                   th:text="${enderecoSalvo.logradouro + ', ' + enderecoSalvo.numero + (enderecoSalvo.complemento != null and !enderecoSalvo.complemento.isEmpty() ? ' — ' + enderecoSalvo.complemento : '') + ' · ' + enderecoSalvo.bairro + ', ' + enderecoSalvo.cidade + '/' + enderecoSalvo.estado + ' · CEP ' + enderecoSalvo.cep}">
+              </div>
+              <input type="hidden" id="endereco-id" th:value="${enderecoSalvo.id}"/>
+            </div>
+            <button class="accordion-toggle" onclick="toggleEndereco(this)" style="margin-top:16px">
+              <i class="fa-solid fa-plus"></i> Usar outro endereço
+            </button>
+            <div class="accordion-content" id="endereco-form-wrap">
+              <div th:each="end : ${enderecos}" class="endereco-opcao" th:data-id="${end.id}"
+                   th:data-texto="${end.logradouro + ', ' + end.numero + ' · ' + end.cidade + '/' + end.estado}"
+                   onclick="selecionarEndereco(this)">
+                <div class="endereco-opcao-apelido" th:text="${end.apelido != null ? end.apelido : 'Endereço'}"></div>
+                <div class="endereco-opcao-texto"
+                     th:text="${end.logradouro + ', ' + end.numero + ' · ' + end.cidade + '/' + end.estado}">
+                </div>
+              </div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:16px 0"/>
+              <p style="font-family:var(--font-cond);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Novo endereço</p>
+              <div th:replace="~{fragments/endereco-form :: enderecoForm}"></div>
+            </div>
+          </div>
+
+          <div th:if="${session.usuarioLogado != null and enderecoSalvo == null}">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Você não tem endereços cadastrados. Informe o endereço de entrega:</p>
+            <div th:replace="~{fragments/endereco-form :: enderecoForm}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-right">
+      <div class="form-card" style="position:sticky;top:80px">
+        <div class="form-card-header">
+          <span class="form-card-title"><i class="fa-solid fa-credit-card" style="margin-right:8px;opacity:.6"></i>Pagamento</span>
+        </div>
+        <div class="form-card-body">
+
+          <div th:if="${session.usuarioLogado == null}" class="checkout-login-prompt" style="margin-bottom:0">
+            <p>Faça login para continuar com o pagamento.</p>
+            <a th:href="@{/login}" class="btn-save" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><span>Fazer login</span></a>
+          </div>
+
+          <div th:if="${session.usuarioLogado != null}">
+            <div class="metodo-pagamento-group">
+              <div class="metodo-opcao selected" id="metodo-pix" onclick="selecionarMetodo('PIX', this)">
+                <div class="metodo-icone"><i class="fa-brands fa-pix"></i></div>
+                <div>
+                  <div class="metodo-label">PIX</div>
+                  <div class="metodo-sub">5% de desconto</div>
+                </div>
+              </div>
+              <div class="metodo-opcao" id="metodo-cartao" onclick="selecionarMetodo('CARTAO', this)">
+                <div class="metodo-icone"><i class="fa-regular fa-credit-card"></i></div>
+                <div>
+                  <div class="metodo-label">Mercado Pago</div>
+                  <div class="metodo-sub">Até 3x sem juros</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="pix-info" class="metodo-info">
+              <p>Após confirmar, você receberá o QR Code do PIX.</p>
+              <p class="metodo-info-destaque">Desconto de 5% aplicado automaticamente.</p>
+            </div>
+
+            <div id="cartao-info" class="metodo-info" style="display:none">
+              <p>Você será redirecionado para o ambiente seguro do Mercado Pago para inserir os dados do cartão.</p>
+            </div>
+
+            <div class="checkout-total-final">
+              <span>Total a pagar</span>
+              <span id="total-final-val">R$ 0,00</span>
+            </div>
+
+            <button class="btn-pagar" id="btn-pagar" onclick="iniciarPagamento()">
+              <span id="btn-pagar-text">Pagar agora</span>
+            </button>
+
+            <p class="checkout-seguro">
+              <i class="fa-solid fa-lock"></i>
+              Pagamento processado com segurança pelo Mercado Pago
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script th:src="@{/js/cursor.js}"></script>
+<script th:src="@{/js/carrinho.js}"></script>
+<script th:src="@{/js/pagamento.js}"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    renderizarItens();
+    atualizarContador();
+  });
+  
+</script>
+</body>
+</html>

@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Nemesis - Pedidos</title>
 
+    <script>
+        (function () {
+            var tema = localStorage.getItem('nemesis_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', tema);
+        })();
+    </script>
+
     <link rel="stylesheet" th:href="@{/css/cursor.css}"/>
     <link rel="stylesheet" th:href="@{/css/painel/panel.css}"/>
     <link rel="stylesheet" th:href="@{/css/painel/pedidos.css}"/>
@@ -99,9 +106,9 @@
 
                 <td>
                     <div class="itens-list">
-                            <span th:each="item, s : ${p.itens}"
+                            <div th:each="item, s : ${p.itens}"
                                   th:text="${item.quantidade} + 'x ' + ${item.variante.produto.nome} + ' (' + ${item.variante.tamanho} + '/' + ${item.variante.cor} + ')'
-                                            + (!s.last ? ' · ' : '')"></span>
+                                            + (!s.last ? ' · ' : '')" ></div>
                         <span th:if="${p.itens == null or #lists.isEmpty(p.itens)}" style="color:var(--muted)">—</span>
                     </div>
                 </td>
