@@ -122,6 +122,7 @@ public class ProdutosController {
         model.addAttribute("colecoes", colecoes);
 
         Map<Long, String> imagemMap = new HashMap<>();
+        Map<Long, List<String>> imagensMap = new HashMap<>();
 
         Map<Long, String> tamanhosProdutoMap = new HashMap<>();
 
@@ -134,6 +135,7 @@ public class ProdutosController {
 
             if (!imgs.isEmpty()) {
                 imagemMap.put(p.getId(), imgs.get(0).getUrl());
+                imagensMap.put(p.getId(), imgs.stream().map(ImagemProduto::getUrl).collect(java.util.stream.Collectors.toList()));
             }
 
             // tamanhos
@@ -151,7 +153,8 @@ public class ProdutosController {
             }
         }
 
-        model.addAttribute("imagensMap", imagemMap);
+        model.addAttribute("imagemMap", imagemMap);
+        model.addAttribute("imagensMap", imagensMap);
 
         model.addAttribute("tamanhosProdutoMap", tamanhosProdutoMap);
 
@@ -175,6 +178,7 @@ public class ProdutosController {
         model.addAttribute("tamanhos", tamanhos);
 
         Map<Long, String> imagemMap = new HashMap<>();
+        Map<Long, List<String>> imagensMap = new HashMap<>();
 
         Map<Long, String> tamanhosProdutoMap = new HashMap<>();
 
@@ -184,6 +188,7 @@ public class ProdutosController {
 
             if (!imgs.isEmpty()) {
                 imagemMap.put(p.getId(), imgs.get(0).getUrl());
+                imagensMap.put(p.getId(), imgs.stream().map(ImagemProduto::getUrl).collect(java.util.stream.Collectors.toList()));
             }
 
             String tamanhosStr = p.getVariantes().stream().map(Variante::getTamanho).distinct().reduce((a, b) -> a + "," + b).orElse("");
@@ -191,7 +196,8 @@ public class ProdutosController {
             tamanhosProdutoMap.put(p.getId(), tamanhosStr);
         }
 
-        model.addAttribute("imagensMap", imagemMap);
+        model.addAttribute("imagemMap", imagemMap);
+        model.addAttribute("imagensMap", imagensMap);
 
         model.addAttribute("tamanhosProdutoMap", tamanhosProdutoMap);
 

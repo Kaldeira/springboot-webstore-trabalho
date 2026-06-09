@@ -223,9 +223,7 @@
 </div>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    const variantesExistentes = /*[[${variantesJson}]]*/ [];
-    /*]]>*/
+    const variantesExistentes = JSON.parse(/*[[${variantesJson}]]*/ '[]');
 </script>
 
 <script th:src="@{/js/cursor.js}"></script>
@@ -233,43 +231,50 @@
 <script>
     let varIdx = 0;
 
-    function addVariante(tam = '', cor = '', est = '') {
-        const i = varIdx++;
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;');
+    }
+
+    function addVariante(id = '', tam = '', cor = '', est = '') {
         const row = document.createElement('div');
         row.className = 'variante-row';
-        row.dataset.idx = i;
+
         row.innerHTML = `
-            <input class="field-input" type="text"
-                   name="variantes[${i}].tamanho" value="${tam}"
-                   placeholder="P, M, G, 38…" style="padding:10px 12px;font-size:13px"/>
-            <input class="field-input" type="text"
-                   name="variantes[${i}].cor" value="${cor}"
-                   placeholder="Preto, Branco…" style="padding:10px 12px;font-size:13px"/>
-            <input class="field-input" type="number"
-                   name="variantes[${i}].estoque" value="${est}" min="0"
-                   placeholder="0" style="padding:10px 12px;font-size:13px;text-align:center"/>
-            <button type="button" class="btn-rm-var" onclick="removeVariante(this)">×</button>
-        `;
+        <input type="hidden" name="var_id" value="${id ?? ''}">
+
+        <input class="field-input" type="text"
+               name="var_tamanho" value="${tam ?? ''}"
+               placeholder="P, M, G, 38…" style="padding:10px 12px;font-size:13px"/>
+
+        <input class="field-input" type="text"
+               name="var_cor" value="${cor ?? ''}"
+               placeholder="Preto, Branco…" style="padding:10px 12px;font-size:13px"/>
+
+        <input class="field-input" type="number"
+               name="var_estoque" value="${est ?? 0}" min="0"
+               placeholder="0" style="padding:10px 12px;font-size:13px;text-align:center"/>
+
+        <button type="button" class="btn-rm-var" onclick="removeVariante(this)">×</button>
+    `;
+
         document.getElementById('variantes-list').appendChild(row);
-        reindex();
-        bindCursor();
+
+        if (typeof bindCursor === 'function') {
+            bindCursor();
+        }
     }
 
     function removeVariante(btn) {
         btn.closest('.variante-row').remove();
-        reindex();
     }
 
-    function reindex() {
-        document.querySelectorAll('.variante-row').forEach((row, i) => {
-            row.querySelectorAll('input').forEach(inp => {
-                inp.name = inp.name.replace(/variantes\[\d+\]/, `variantes[${i}]`);
-            });
-        });
-    }
-
-    if (variantesExistentes && variantesExistentes.length > 0) {
-        variantesExistentes.forEach(v => addVariante(v.tamanho, v.cor, v.estoque));
+    if (Array.isArray(variantesExistentes) && variantesExistentes.length > 0) {
+        variantesExistentes.forEach(v => addVariante(v.id, v.tamanho, v.cor, v.estoque));
     } else {
         addVariante();
     }

@@ -62,15 +62,18 @@
         <div th:each="slide, stat : ${slides}"
              class="slide"
              th:classappend="${stat.index == 0} ? ' active'"
-             th:style="|background-image: url('${slide.imagem}')|"
+             th:style="|--slide-desktop: url('@{${slide.imagem}}'); --slide-mobile: url('@{${slide.imagemMobile}}');|"
              th:data-link="${slide.link}">
+
             <div class="hero-left">
                 <div class="hero-actions">
-                    <a id="heroBtn" th:href="${slide.link}" class="btn-primary">Ver coleção</a>
+                    <a th:href="${slide.link}" class="btn-primary">Ver coleção</a>
                 </div>
             </div>
+
         </div>
     </div>
+
     <div class="hero-line"></div>
 </section>
 

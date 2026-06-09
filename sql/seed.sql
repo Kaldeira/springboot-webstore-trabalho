@@ -17,7 +17,7 @@ INSERT INTO categorias (nome, descricao, colecao) VALUES
 
 INSERT INTO produtos (categoria_id, nome, descricao, preco) VALUES
   -- CAMISETAS
-  (1, 'Camiseta Divino Gold',        'Estampa premium dourada, algodão fio 30.',         89.90),
+  (1, 'Camiseta Divino Gold',        'Estampa premium, algodão fio 30.',                  89.90),
   (2, 'Camiseta Alucard Blood',      'Modelagem streetwear com estampa dark.',            99.90),
   (3, 'Camiseta Morte Skull',        'Camiseta preta com arte caveira exclusiva.',        94.90),
 
@@ -110,11 +110,22 @@ INSERT INTO variantes (produto_id, tamanho, cor, estoque) VALUES
 
 
 INSERT INTO imagens_produto (produto_id, url, principal) VALUES
-  (1,  '/uploads/camiseta-divino-gold.png', TRUE),
-  (2,  '/uploads/camiseta-alucard-blood.png', TRUE),
-  (3, '/uploads/camiseta-morte-skull.png', TRUE),
+  (1,  '/uploads/camiseta/1/1_1.webp', TRUE),
+  (1,  '/uploads/camiseta/1/1_2.webp', FALSE),
+  (1,  '/uploads/camiseta/1/1_3.webp', FALSE),
+  
+  (2,  '/uploads/camiseta/2/2_1.webp', TRUE),
+  (2,  '/uploads/camiseta/2/2_2.webp', FALSE),
+  (2,  '/uploads/camiseta/2/2_3.webp', FALSE),
+  
+  (3,  '/uploads/camiseta/4/4_1.webp', TRUE),
+  (3,  '/uploads/camiseta/4/4_2.webp', FALSE),
+  (3,  '/uploads/camiseta/4/4_3.webp', FALSE),
+  
+  (4, '/uploads/calca/1/1_1.jpg', TRUE),
+  (4, '/uploads/calca/1/1_2.jpg', FALSE),
+  (4, '/uploads/calca/1/1_3.jpg', FALSE),
 
-  (4, '/uploads/calca-divino-jogger-white.png', TRUE),
   (5, '/uploads/calca-alucard-cargo-black.png', TRUE),
   (6, '/uploads/calca-morte-destroyed.png', TRUE),
 

@@ -128,9 +128,9 @@ public class MainController {
 
     private List<Slide> getSlides() {
         return List.of(
-                new Slide("/imagens/alucard.png", "/colecao/alucard"),
-                new Slide("/imagens/divino.png", "/colecao/divino"),
-                new Slide("/imagens/morte.png", "/colecao/morte")
+                new Slide("/imagens/alucard.png", "/imagens/alucard_mobile.png", "/colecao/alucard"),
+                new Slide("/imagens/divino.png", "/imagens/divino_mobile.png", "/colecao/divino"),
+                new Slide("/imagens/morte.png", "/imagens/morte_mobile.png", "/colecao/morte")
         );
     }
 

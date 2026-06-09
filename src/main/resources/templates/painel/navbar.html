@@ -33,8 +33,10 @@
                 <i class="fa-solid fa-moon" id="theme-icon"></i>
             </button>
 
-            <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">
-                <i class="fa-solid fa-bars"></i>
+            <button class="panel-hamburger" id="panel-hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
 
             <form th:action="@{/logout}" method="post" class="logout-form">
@@ -42,6 +44,60 @@
             </form>
         </div>
     </nav>
+
+    <div class="panel-mobile-drawer" id="panel-mobile-drawer">
+
+        <a th:href="@{/painel/produtos}"
+           class="panel-mobile-link"
+           th:classappend="${paginaAtiva == 'listarProdutos'} ? ' active' : ''">
+            <i class="fa-solid fa-box"></i>
+            Produtos
+        </a>
+
+        <a th:href="@{/painel/produtos/novo}"
+           class="panel-mobile-link"
+           th:classappend="${paginaAtiva == 'addProdutos'} ? ' active' : ''">
+            <i class="fa-solid fa-plus"></i>
+            Novo produto
+        </a>
+
+        <a th:href="@{/painel/pedidos}"
+           class="panel-mobile-link"
+           th:classappend="${paginaAtiva == 'pedidos'} ? ' active' : ''">
+            <i class="fa-solid fa-receipt"></i>
+            Pedidos
+        </a>
+
+        <a th:href="@{/painel/categorias}"
+           class="panel-mobile-link"
+           th:classappend="${paginaAtiva == 'categorias'} ? ' active' : ''">
+            <i class="fa-solid fa-tags"></i>
+            Categorias
+        </a>
+
+        <a th:if="${session.usuarioLogado.tipo.ordinal() == 0}"
+           th:href="@{/painel/usuarios}"
+           class="panel-mobile-link"
+           th:classappend="${paginaAtiva == 'listarUsuarios'} ? ' active' : ''">
+            <i class="fa-solid fa-users"></i>
+            Usuários
+        </a>
+
+        <div class="panel-mobile-actions">
+            <a th:href="@{/perfil}" class="panel-mobile-action">
+                <i class="fa-solid fa-user"></i>
+                Meu perfil
+            </a>
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="panel-mobile-action">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Sair
+                </button>
+            </form>
+        </div>
+
+    </div>
 
     <script>
         (function () {
@@ -55,30 +111,27 @@
             syncIcon(current);
 
             var btn = document.getElementById('theme-btn');
+
             if (btn) {
                 btn.addEventListener('click', function () {
-                    var html  = document.documentElement;
-                    var next  = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                    var html = document.documentElement;
+                    var next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+
                     html.setAttribute('data-theme', next);
                     localStorage.setItem('nemesis_theme', next);
                     syncIcon(next);
                 });
             }
 
-            var toggle = document.getElementById('sidebar-toggle');
-            var sidebar = document.getElementById('sidebar');
-            var overlay = document.getElementById('sidebar-overlay');
-            if (toggle && sidebar) {
-                toggle.addEventListener('click', function () {
-                    var open = sidebar.classList.toggle('open');
-                    if (overlay) overlay.classList.toggle('open', open);
+            var hbg = document.getElementById('panel-hamburger');
+            var drawer = document.getElementById('panel-mobile-drawer');
+
+            if (hbg && drawer) {
+                hbg.addEventListener('click', function () {
+                    var open = drawer.classList.toggle('open');
+                    hbg.classList.toggle('open', open);
+                    document.body.style.overflow = open ? 'hidden' : '';
                 });
-                if (overlay) {
-                    overlay.addEventListener('click', function () {
-                        sidebar.classList.remove('open');
-                        overlay.classList.remove('open');
-                    });
-                }
             }
         })();
     </script>

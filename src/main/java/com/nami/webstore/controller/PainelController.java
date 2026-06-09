@@ -135,8 +135,9 @@ public class PainelController {
     public String salvarEdicao(@PathVariable Long id,
                                @ModelAttribute("produto") Produtos form,
                                @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                               @RequestParam(value = "var_id", required = false) List<Long> varIds,
                                @RequestParam(value = "var_tamanho", required = false) List<String> varTamanhos,
-                               @RequestParam(value = "var_cor",     required = false) List<String> varCores,
+                               @RequestParam(value = "var_cor", required = false) List<String> varCores,
                                @RequestParam(value = "var_estoque", required = false) List<Integer> varEstoques,
                                HttpSession session,
                                RedirectAttributes ra) {
@@ -159,17 +160,61 @@ public class PainelController {
             produtoRepository.save(produto);
 
             // substituir variantes usando listas paralelas
+            System.out.println("varIds = " + varIds);
+            System.out.println("varTamanhos = " + varTamanhos);
+            System.out.println("varCores = " + varCores);
+            System.out.println("varEstoques = " + varEstoques);
+
             if (varTamanhos != null && !varTamanhos.isEmpty()) {
-                List<Variante> antigas = varianteRepository.findByProdutoId(id);
-                varianteRepository.deleteAll(antigas);
                 for (int vi = 0; vi < varTamanhos.size(); vi++) {
                     String tam = varTamanhos.get(vi);
-                    if (tam == null || tam.isBlank()) continue;
-                    Variante v = new Variante();
-                    v.setProduto(produto);
+
+                    if (tam == null || tam.isBlank()) {
+                        continue;
+                    }
+
+                    Variante v = null;
+
+                    Long varId = null;
+                    if (varIds != null && vi < varIds.size()) {
+                        varId = varIds.get(vi);
+                    }
+
+                    if (varId != null) {
+                        Optional<Variante> optVar = varianteRepository.findById(varId);
+
+                        if (optVar.isPresent() &&
+                                optVar.get().getProduto() != null &&
+                                optVar.get().getProduto().getId().equals(id)) {
+                            v = optVar.get();
+                        }
+                    }
+
+                    if (v == null) {
+                        v = new Variante();
+                        v.setProduto(produto);
+                    }
+
                     v.setTamanho(tam.trim());
-                    v.setCor(varCores != null && vi < varCores.size() ? varCores.get(vi).trim() : "Único");
-                    v.setEstoque(varEstoques != null && vi < varEstoques.size() && varEstoques.get(vi) != null ? varEstoques.get(vi) : 0);
+
+                    String cor = "Único";
+                    if (varCores != null &&
+                            vi < varCores.size() &&
+                            varCores.get(vi) != null &&
+                            !varCores.get(vi).isBlank()) {
+                        cor = varCores.get(vi).trim();
+                    }
+
+                    Integer estoque = 0;
+                    if (varEstoques != null &&
+                            vi < varEstoques.size() &&
+                            varEstoques.get(vi) != null) {
+                        estoque = varEstoques.get(vi);
+                    }
+
+                    v.setCor(cor);
+                    v.setEstoque(estoque);
+
                     varianteRepository.save(v);
                 }
             }

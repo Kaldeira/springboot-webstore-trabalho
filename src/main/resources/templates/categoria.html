@@ -110,11 +110,19 @@
                 <a th:href="@{/produto/{id}(id=${p.id})}" class="card-link">
                     <div class="product-img-wrap">
                         <div class="card-imgs" th:data-card-id="${p.id}">
-                            <div th:each="url, us : ${imagensMap != null and imagensMap[p.id] != null ? imagensMap[p.id] : null}"
+                            <div th:each="url, us : ${imagensMap != null and imagensMap[p.id] != null
+                            ? imagensMap[p.id]
+                            : (imagemMap != null and imagemMap[p.id] != null
+                                ? #lists.listOf(imagemMap[p.id])
+                                : #lists.listOf(''))}"
                                  class="card-img-slide"
                                  th:classappend="${us.index == 0} ? ' active'">
-                                <img th:if="${!#strings.isEmpty(url)}" th:src="@{${url}}" th:alt="${p.nome}"
+
+                                <img th:if="${!#strings.isEmpty(url)}"
+                                     th:src="@{${url}}"
+                                     th:alt="${p.nome}"
                                      class="product-img"/>
+
                                 <div th:if="${#strings.isEmpty(url)}"
                                      class="product-img-bg"
                                      th:text="${#strings.substring(p.nome, 0, 3).toUpperCase()}">???
@@ -126,12 +134,17 @@
 
                         <button class="card-arrow card-arrow-prev"
                                 th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
-                                th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),-1)'"
-                                type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                                th:onclick="'event.preventDefault(); event.stopPropagation(); cardNav(event,this.closest(\'.product-card\'),-1)'"
+                                type="button">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
                         <button class="card-arrow card-arrow-next"
                                 th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}"
-                                th:onclick="'event.preventDefault();cardNav(event,this.closest(\'.product-card\'),1)'"
-                                type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                                th:onclick="'event.preventDefault(); event.stopPropagation(); cardNav(event,this.closest(\'.product-card\'),1)'"
+                                type="button">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
 
                         <div class="card-dots"
                              th:if="${imagensMap != null and imagensMap[p.id] != null and #lists.size(imagensMap[p.id]) > 1}">

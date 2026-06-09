@@ -24,4 +24,7 @@ public interface CategoriaRepository extends JpaRepository<Categorias, Long> {
     List<String> buscarColecoesPorNome(
             @Param("categoria") String categoria
     );
+
+    @Query("select distinct c.colecao from Categorias c where c.colecao is not null and c.colecao <> '' order by c.colecao")
+    List<String> buscarColecoesNavbar();
 }

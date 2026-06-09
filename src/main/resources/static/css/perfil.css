@@ -318,7 +318,6 @@
 
 .btn-rm-endereco:hover { border-color: rgba(255,60,46,.4); color: var(--accent2); }
 
-/* Accordion */
 .accordion-toggle {
     font-family: var(--font-cond);
     font-weight: 700;
@@ -369,22 +368,427 @@
 .shortcut-link i { width: 16px; opacity: .6; }
 
 
+/* =========================
+   RESPONSIVO PERFIL - REFEITO
+   Tudo empilhado em telas menores
+   ========================= */
+
 @media (max-width: 1024px) {
-    .perfil-grid { grid-template-columns: 1fr; }
+    .perfil-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
-    .perfil-wrap { padding: 40px 24px 60px; }
-    .perfil-header { margin-bottom: 32px; }
-    .field-row { grid-template-columns: 1fr; }
-    .form-card-body { padding: 20px; }
-    .form-card-header { padding: 16px 20px; }
+    .perfil-wrap {
+        max-width: 100%;
+        padding: 40px 24px 64px;
+        overflow-x: hidden;
+    }
+
+    .perfil-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+        margin-bottom: 36px;
+    }
+
+    .perfil-avatar {
+        width: 72px;
+        height: 72px;
+        font-size: 32px;
+    }
+
+    .perfil-header > div {
+        width: 100%;
+    }
+
+    .perfil-nome {
+        font-size: 40px;
+        line-height: 1;
+        word-break: break-word;
+    }
+
+    .perfil-tag {
+        font-size: 10px;
+        letter-spacing: .16em;
+    }
+
+    .perfil-tipo {
+        font-size: 9px;
+        letter-spacing: .16em;
+    }
+
+    .perfil-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .form-card {
+        width: 100%;
+        margin-bottom: 22px;
+    }
+
+    .form-card-header {
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 6px;
+    }
+
+    .form-card-title {
+        font-size: 12px;
+        line-height: 1.35;
+    }
+
+    .form-card-body {
+        padding: 20px;
+    }
+
+    .field-row {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .field-group {
+        width: 100%;
+    }
+
+    .field-label {
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 10px;
+        line-height: 1.4;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .btn-save,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .pedido-row-top {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 6px;
+    }
+
+    .pedido-row-itens,
+    .pedido-row-valor,
+    .pedido-row-data,
+    .pedido-row-id {
+        width: 100%;
+    }
+
+    .pedido-row-status {
+        max-width: 100%;
+        line-height: 1.4;
+    }
+
+    .endereco-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+
+    .endereco-row > div {
+        width: 100%;
+    }
+
+    .btn-rm-endereco {
+        width: 100%;
+        height: 38px;
+    }
+
+    .admin-shortcut {
+        width: 100%;
+    }
+
+    .shortcut-link {
+        width: 100%;
+        justify-content: flex-start;
+        line-height: 1.4;
+    }
 }
 
 @media (max-width: 480px) {
-    .perfil-wrap { padding: 28px 16px 48px; }
-    .perfil-header { gap: 16px; align-items: flex-start; }
-    .perfil-avatar { width: 60px; height: 60px; font-size: 28px; }
-    .form-card-body { padding: 16px; }
-    .btn-save { width: 100%; text-align: center; }
+    .perfil-wrap {
+        padding: 28px 16px 52px;
+    }
+
+    .perfil-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 30px;
+    }
+
+    .perfil-avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 28px;
+    }
+
+    .perfil-nome {
+        font-size: 32px;
+        line-height: 1;
+    }
+
+    .perfil-tag {
+        font-size: 9px;
+        letter-spacing: .14em;
+        margin-bottom: 6px;
+    }
+
+    .perfil-tipo {
+        font-size: 9px;
+        padding: 4px 10px;
+    }
+
+    .perfil-grid {
+        gap: 18px;
+    }
+
+    .form-card {
+        margin-bottom: 18px;
+    }
+
+    .form-card-header {
+        padding: 14px 14px;
+    }
+
+    .form-card-body {
+        padding: 14px;
+    }
+
+    .form-card-title {
+        font-size: 11px;
+    }
+
+    .field-group {
+        margin-bottom: 16px;
+    }
+
+    .field-label {
+        font-size: 10px;
+        letter-spacing: .12em;
+        margin-bottom: 8px;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+        padding: 12px 13px;
+        font-size: 16px;
+    }
+
+    .flash {
+        padding: 13px 14px;
+        margin-bottom: 20px;
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .pedido-row {
+        padding: 16px 0;
+    }
+
+    .pedido-row-id {
+        font-size: 12px;
+    }
+
+    .pedido-row-data {
+        font-size: 10px;
+    }
+
+    .pedido-row-status {
+        font-size: 9px;
+        padding: 4px 8px;
+    }
+
+    .pedido-row-itens {
+        font-size: 12px;
+        line-height: 1.55;
+        word-break: break-word;
+    }
+
+    .pedido-row-valor {
+        font-size: 15px;
+    }
+
+    .endereco-apelido {
+        font-size: 10px;
+        line-height: 1.4;
+    }
+
+    .endereco-texto {
+        font-size: 12px;
+        line-height: 1.6;
+        word-break: break-word;
+    }
+
+    .accordion-toggle {
+        font-size: 10px;
+        line-height: 1.4;
+        padding: 12px 14px;
+    }
+
+    .shortcut-link {
+        padding: 13px 14px;
+        font-size: 11px;
+    }
+
+    .empty-pedidos {
+        padding: 28px 0;
+    }
+
+    .empty-pedidos-text {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 360px) {
+    .perfil-wrap {
+        padding: 24px 12px 44px;
+    }
+
+    .perfil-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+
+    .perfil-nome {
+        font-size: 28px;
+    }
+
+    .form-card-header,
+    .form-card-body {
+        padding: 12px;
+    }
+
+    .btn-save,
+    .btn-secondary {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+/* FORÇAR PERFIL 100% EMPILHADO EM CELULAR */
+@media screen and (max-width: 768px) {
+    .perfil-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 28px 16px 48px !important;
+        overflow-x: hidden !important;
+    }
+
+    .perfil-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        gap: 14px !important;
+    }
+
+    .perfil-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 20px !important;
+    }
+
+    .perfil-grid > * {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .form-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 20px !important;
+    }
+
+    .form-card-header {
+        padding: 14px 16px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .form-card-body {
+        padding: 16px !important;
+    }
+
+    .field-row {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 14px !important;
+    }
+
+    .field-group {
+        width: 100% !important;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        font-size: 16px !important;
+    }
+
+    .btn-save,
+    .btn-secondary,
+    .shortcut-link {
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    .admin-shortcut {
+        width: 100% !important;
+    }
+}
+
+@media screen and (max-width: 430px) {
+    .perfil-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+    }
+
+    .perfil-grid > div {
+        width: 100% !important;
+    }
+
+    .perfil-nome {
+        font-size: 32px !important;
+    }
+
+    .perfil-avatar {
+        width: 64px !important;
+        height: 64px !important;
+        font-size: 28px !important;
+    }
 }

@@ -27,7 +27,7 @@
             <span class="icon">◉</span> Pedidos
         </a>
     </div>
-    <div class="sidebar-section">
+    <div class="sidebar-section" th:if="${session.usuarioLogado.getTipo().ordinal() == 0}">
         <div class="sidebar-label">Gestão</div>
         <a th:href="@{/painel/usuarios}" class="sidebar-link" th:classappend="${paginaAtiva == 'listarUsuarios'} ? 'active'">
             <span class="icon">◎</span> Usuários

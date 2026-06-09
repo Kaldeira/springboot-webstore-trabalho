@@ -27,6 +27,24 @@
                     <li><a th:href="@{/categoria/shorts}">Shorts</a></li>
                 </ul>
             </li>
+            <li class="dropdown">
+                <a href="#">
+                    Coleções <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li th:if="${colecoesNavbar == null or #lists.isEmpty(colecoesNavbar)}">
+                        <a href="#">Nenhuma coleção</a>
+                    </li>
+
+                    <li th:each="colecao : ${colecoesNavbar}">
+                        <a th:href="@{/colecao/{nome}(nome=${colecao})}"
+                           th:text="${colecao}">
+                            Coleção
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li th:if="${session.usuarioLogado != null &amp;&amp; session.usuarioLogado.getTipo().ordinal() != 1}">
                 <a th:href="@{/panelProdutos}">Painel</a>
             </li>
