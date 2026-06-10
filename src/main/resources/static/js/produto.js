@@ -6,6 +6,53 @@ function _getVariantes() {
     return VARIANTES_DATA[PRODUTO_ID] || [];
 }
 
+function _getEstoqueVariante(variante) {
+    if (!variante) return 0;
+    return Number(variante.estoque || 0);
+}
+
+function _getCartQtdVariante(variante) {
+    if (!variante) return 0;
+
+    var cart = getCart();
+    var key = PRODUTO_ID + '-' + variante.id;
+
+    var item = cart.find(function(i) {
+        return i.key === key;
+    });
+
+    return item ? Number(item.quantidade || 0) : 0;
+}
+
+function _getDisponivelVariante(variante) {
+    var estoque = _getEstoqueVariante(variante);
+    var jaNoCarrinho = _getCartQtdVariante(variante);
+
+    return Math.max(0, estoque - jaNoCarrinho);
+}
+
+function _setQtdProd(qtd) {
+    _qtdProd = Math.max(1, Number(qtd || 1));
+
+    var el = document.getElementById('prod-qty');
+    if (el) el.textContent = _qtdProd;
+}
+
+function _mostrarErroProduto(msg) {
+    var err = document.getElementById('prod-err');
+    if (!err) return;
+
+    err.textContent = msg;
+    err.style.display = 'block';
+}
+
+function _esconderErroProduto() {
+    var err = document.getElementById('prod-err');
+    if (!err) return;
+
+    err.style.display = 'none';
+}
+
 function _galeriaSync(idx) {
     if (!IMAGENS_URLS.length) return;
 
@@ -49,14 +96,21 @@ function _buildTamanhoOpts() {
         // evita repetir tamanho
         if (container.querySelector('[data-tamanho="' + v.tamanho + '"]')) return;
 
+        var estoque = _getEstoqueVariante(v);
+
         var btn = document.createElement('button');
 
         btn.type = 'button';
-        btn.className = 'var-btn' + (v.estoque <= 0 ? ' esgotado' : '');
-        btn.textContent = v.tamanho;
+        btn.className = 'var-btn' + (estoque <= 0 ? ' esgotado' : '');
         btn.dataset.tamanho = v.tamanho;
+        btn.dataset.estoque = estoque;
 
-        if (v.estoque <= 0) btn.disabled = true;
+        if (estoque <= 0) {
+            btn.disabled = true;
+            btn.textContent = v.tamanho + ' - Esgotado';
+        } else {
+            btn.textContent = v.tamanho;
+        }
 
         btn.onclick = function() {
             selecionarTamanho(btn, v);
@@ -76,24 +130,81 @@ function selecionarTamanho(btn, variante) {
     _varianteAtual = variante;
 
     var txt = document.getElementById('tam-selected');
-    if (txt) txt.textContent = variante.tamanho;
+    if (txt) {
+        txt.textContent = variante.tamanho;
+    }
 
-    var err = document.getElementById('prod-err');
-    if (err) err.style.display = 'none';
+    var disponivel = _getDisponivelVariante(variante);
+
+    var estoqueInfo = document.getElementById('produto-estoque-info');
+    if (estoqueInfo) {
+        estoqueInfo.textContent = 'Disponível: ' + disponivel + ' unidade(s)';
+    }
+
+    if (disponivel <= 0) {
+        _setQtdProd(1);
+        _mostrarErroProduto('Você já adicionou todo o estoque desse tamanho no carrinho');
+        return;
+    }
+
+    _setQtdProd(1);
+    _esconderErroProduto();
 }
 
 function alterarQtyProd(delta) {
-    _qtdProd = Math.max(1, _qtdProd + delta);
+    if (!_varianteAtual) {
+        _mostrarErroProduto('Selecione um tamanho para continuar');
+        return;
+    }
 
-    var el = document.getElementById('prod-qty');
-    if (el) el.textContent = _qtdProd;
+    var disponivel = _getDisponivelVariante(_varianteAtual);
+
+    if (disponivel <= 0) {
+        _setQtdProd(1);
+        _mostrarErroProduto('Não há mais estoque disponível para esse tamanho');
+        return;
+    }
+
+    var novaQtd = _qtdProd + delta;
+
+    if (novaQtd < 1) {
+        novaQtd = 1;
+    }
+
+    if (novaQtd > disponivel) {
+        novaQtd = disponivel;
+        _mostrarErroProduto('Quantidade máxima disponível: ' + disponivel);
+    } else {
+        _esconderErroProduto();
+    }
+
+    _setQtdProd(novaQtd);
 }
 
 function addProdutoCarrinho() {
 
     if (!_varianteAtual) {
-        var err = document.getElementById('prod-err');
-        if (err) err.style.display = 'block';
+        _mostrarErroProduto('Selecione um tamanho para continuar');
+        return;
+    }
+
+    var estoque = _getEstoqueVariante(_varianteAtual);
+    var jaNoCarrinho = _getCartQtdVariante(_varianteAtual);
+    var disponivel = Math.max(0, estoque - jaNoCarrinho);
+
+    if (estoque <= 0) {
+        _mostrarErroProduto('Esse tamanho está esgotado');
+        return;
+    }
+
+    if (disponivel <= 0) {
+        _mostrarErroProduto('Você já adicionou todo o estoque desse tamanho no carrinho');
+        return;
+    }
+
+    if (_qtdProd > disponivel) {
+        _setQtdProd(disponivel);
+        _mostrarErroProduto('Quantidade ajustada para o máximo disponível: ' + disponivel);
         return;
     }
 
@@ -111,6 +222,10 @@ function addProdutoCarrinho() {
 
         item.quantidade += _qtdProd;
 
+        if (item.quantidade > estoque) {
+            item.quantidade = estoque;
+        }
+
     } else {
 
         cart.push({
@@ -121,6 +236,7 @@ function addProdutoCarrinho() {
             img: img ? img.src : '',
             variante: _varianteAtual.tamanho,
             varianteId: _varianteAtual.id,
+            estoque: estoque,
             quantidade: _qtdProd
         });
 
@@ -129,6 +245,8 @@ function addProdutoCarrinho() {
     saveCart(cart);
 
     atualizarContador();
+
+    _esconderErroProduto();
 
     abrirCarrinho();
 }

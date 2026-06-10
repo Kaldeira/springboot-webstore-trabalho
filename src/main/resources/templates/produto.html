@@ -106,7 +106,11 @@
                     <span class="variante-selected-text" id="tam-selected"></span>
                 </div>
                 <div class="variante-opts" id="tamanho-opts"></div>
+
+                <div class="produto-estoque-info" id="produto-estoque-info"></div>
             </div>
+
+
 
             <button class="tabela-toggle" onclick="toggleTabela(this)" type="button">
                 <i class="fa-solid fa-ruler"></i> Guia de tamanhos
@@ -136,9 +140,9 @@
             <div class="produto-qty-wrap">
                 <span class="produto-qty-label">Quantidade</span>
                 <div class="produto-qty">
-                    <button class="produto-qty-btn" onclick="alterarQtyProd(-1)" type="button">−</button>
+                    <button class="produto-qty-btn" id="btn-qty-minus" onclick="alterarQtyProd(-1)" type="button">−</button>
                     <div class="produto-qty-num" id="prod-qty">1</div>
-                    <button class="produto-qty-btn" onclick="alterarQtyProd(1)" type="button">+</button>
+                    <button class="produto-qty-btn" id="btn-qty-plus" onclick="alterarQtyProd(1)" type="button">+</button>
                 </div>
             </div>
 
