@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/cursor.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" th:href="@{/css/card-produtos.css}">
+    <link rel="stylesheet" th:href="@{/css/carrinho.css}">
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@500;700&display=swap"
           rel="stylesheet"/>
@@ -34,6 +35,24 @@
 <div id="cursor"></div>
 
 <div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- overlay do carrinho -->
+<div class="cart-overlay" id="cart-overlay" onclick="fecharCarrinho()"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-head">
+        <div class="cart-drawer-title">Carrinho</div>
+        <button class="cart-close" onclick="fecharCarrinho()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-drawer-body" id="cart-body"></div>
+    <div class="cart-drawer-foot" id="cart-foot" style="display:none">
+        <div class="cart-subtotal">
+            <span class="cart-subtotal-label">Subtotal</span>
+            <span class="cart-subtotal-val" id="cart-total-val">R$ 0,00</span>
+        </div>
+        <p class="cart-frete-hint">Frete grátis para compras acima de R$ 499</p>
+        <a href="/checkout" class="btn-checkout"><span>Finalizar compra</span></a>
+    </div>
+</div>
 
 <section class="categoria-page">
 

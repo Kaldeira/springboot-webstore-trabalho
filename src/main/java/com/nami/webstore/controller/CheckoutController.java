@@ -238,7 +238,7 @@ public class CheckoutController {
 
         preference.put("back_urls", backUrls);
 
-        //preference.put("auto_return", "approved"); //caso for subir no dominio isso aqui é necesasrio para voltar auto para o url
+       // preference.put("auto_return", "approved"); //caso for subir no dominio isso aqui é necesasrio para voltar auto para o url
 
         Map<String,Object> payer = new HashMap<>();
         payer.put("email", usuario.getEmail());
@@ -280,8 +280,29 @@ public class CheckoutController {
     public String retorno(@RequestParam String status,
                           @RequestParam(required = false) String pedido,
                           Model model) {
+
+        if (pedido != null && !pedido.isBlank()) {
+            try {
+                Long pedidoId = Long.parseLong(pedido);
+
+                pedidoRepository.findById(pedidoId).ifPresent(p -> {
+                    if ("success".equalsIgnoreCase(status)) {
+                        p.setStatus(StatusPedido.PAGO);
+                    } else if ("failure".equalsIgnoreCase(status)) {
+                        p.setStatus(StatusPedido.CANCELADO);
+                    } else if ("pending".equalsIgnoreCase(status)) {
+                        p.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
+                    }
+
+                    pedidoRepository.save(p);
+                });
+
+            } catch (NumberFormatException ignored) {}
+        }
+
         model.addAttribute("status", status);
         model.addAttribute("pedidoId", pedido);
+
         return "checkout-sucesso";
     }
 

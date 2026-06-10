@@ -59,7 +59,7 @@ function renderizarItens() {
     var total = document.getElementById('co-total');
     if (sub) sub.textContent = fmt(subtotal);
     if (fr) fr.textContent = frete === 0 ? 'Grátis' : fmt(frete);
-    if (frete) total.textContent = fmt((subtotal + frete));
+    if (subtotal) total.textContent = fmt(subtotal + frete);
     atualizarTotalFinal();
 }
 

@@ -49,7 +49,7 @@ public class UsuariosController {
     public ModelAndView cadastrar(Usuario usuario) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         userService.salvarUsuario(usuario);
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/login");
         return modelAndView;
     }
 }
